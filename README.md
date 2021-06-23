@@ -1,6 +1,6 @@
-# s15_QCamp2021-main
+# s15_QCamp2022
 
-# Qcamp 2021
+# Qcamp 2022
 
 
 ## QKD implementation, with a twist.
