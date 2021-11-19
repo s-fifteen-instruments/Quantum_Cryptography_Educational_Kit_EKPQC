@@ -10,22 +10,23 @@ GUI for clustering algorithm for `Q'KD hacking
 
 import sys
 import glob
-import time
+#import os
+#import time
 import string
 import matplotlib.pyplot as plt
 
-from PyQt4 import QtGui, uic
-from PyQt4.QtCore import QTimer
+from PyQt5 import QtGui, uic
+from PyQt5.QtCore import QTimer
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import normalize
 from tabulate import tabulate
 from collections import Counter
 
 import pyqtgraph as pg
-import Queue
-import threading
-import json
 import numpy as np
+
+#ui_path = os.path.dirname(os.path.abspath(__file__))
+#form_class = uic.loadUiType(os.path.join(ui_path, "guiInterceptor.ui"))[0]
 
 form_class = uic.loadUiType("guiInterceptor.ui")[0]
 
@@ -57,7 +58,7 @@ def apply_mask_16(unkey_bin,matchbs_bin):
 	siftkey_bin = ''
 	siftkey_len = 0
 	for bit in siftmask_bin:
-	    if bit is 'X':
+	    if bit == 'X':
 	        pass
 	    else:
 	        siftkey_bin += bit
@@ -103,22 +104,19 @@ def kclassify(data, numClasses=5):
 	    # spreads.append(np.std(data[labels==label]))
 	return np.array(labels), np.array(means)
 
-def kclassify2D(x,y, numClasses=5):
+def kclassify2D(x: np.ndarray,y: np.ndarray, numClasses=5):
 	"""
 	Classify 2-dimensional data into classes using KMeans algorithm
 	5 classes are a default, refering to noise, and the four polarisations to be detected.
 	"""
 
-
-	x = np.array(x)
-	y = np.array(y)
-	data=np.array(zip(x,y)).reshape([-1,2])
+	data=np.c_[x,y].reshape([-1,2])
 
 	# Normalise
 	x = normalize(x.reshape([-1,1]),axis=0)
 	y = normalize(y.reshape([-1,1]),axis=0)
 
-	dataNormed=np.array(zip(x,y)).reshape([-1,2])
+	dataNormed=np.array(list(zip(x,y))).reshape([-1,2])
 	# print(x,y)
 	# Classify
 	km = KMeans(n_clusters=numClasses, algorithm="full")
@@ -139,7 +137,7 @@ def kclassify2D(x,y, numClasses=5):
 	    spreads.append(np.std(data[:,0][labels==label]))
 	    spreads2.append(np.std(data[:,1][labels==label]))
 	# print('kmeans labels = {}'.format(list(labels)))
-	return np.array(list(labels)), np.array(classes), np.array(zip(means,means2)), np.array(zip(spreads,spreads2))
+	return np.array(list(labels)), np.array(classes), np.c_[means,means2], np.c_[spreads,spreads2]
 
 def hist(signals, numbins=200):
 	"""
@@ -312,6 +310,7 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
 		# self.histo_plot.plot(center, symbol='o', pen=None, name=Class)
 		# self.histo_plot.plot(center[0][0], center[0][1], symbol='x', pen=None, symbolBrush=pg.mkBrush(colors[Class]), name=list(string.ascii_uppercase)[Class])
 		# print [(center[0], center[1]) for center, Class in zip(self.voltageClasses2D, self.classes)]
+		
 		for center, Class in zip(self.voltageClasses2D, self.classes):
 			#print (center[0], center[1])
 			text = pg.TextItem(list(string.ascii_uppercase)[Class],color=(0,0,0))
