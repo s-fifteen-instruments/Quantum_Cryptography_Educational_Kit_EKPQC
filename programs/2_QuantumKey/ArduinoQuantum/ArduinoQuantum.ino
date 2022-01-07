@@ -7,8 +7,9 @@
 
 #include <EEPROM.h>
 #include "EEPROMAnything.h"
-#include <Stepper.h>
-#include <Entropy.h>
+//#include <Stepper.h>
+#include <PolarizerMotor.h>
+#include "Entropy.h"
 
 // Important parameters
 const int seqLength = 16;  // Polarisation sequence length (16 bit)
@@ -47,11 +48,11 @@ float stepsErrAcc = 0;
     
 // initialize the stepper library on pins 8 through 11:
 // need to swap pins 10 and 9 (due to wiring reason)
-Stepper myStepper(stepsPerRevolution,8,10,9,11);            
+PolarizerMotor myMotor(8,9);            
 
 void setup() {
   // set the speed at 60 rpm: 
-  myStepper.setSpeed(stepSpeed);
+  myMotor.setSpeed(stepSpeed);
   // initialize the serial port:
   Serial.begin(9600);
   Serial.setTimeout(serialTimeout);
@@ -285,27 +286,30 @@ int moveStepper(){
   int target;
   EEPROM_readAnything(EEloc_angleCurrent, current);
   EEPROM_readAnything(EEloc_angleTarget, target);
-  double stepsDiff = (target - current) * (float) (stepsPerRevolution / 360.0);
+  myMotor.gotoAngle(target);
+  //double stepsDiff = (target - current) * (float) (stepsPerRevolution / 360.0);
   // Debug: Printing how many steps it moves.
   // Serial.print("Moving ");
   // Serial.println(stepsDiff);
   // Moving 
   
   // Floating point consideration
-  stepsDiff += stepsErrAcc;
-  stepsErrAcc = stepsDiff - int(stepsDiff);
+  //stepsDiff += stepsErrAcc;
+  //stepsErrAcc = stepsDiff - int(stepsDiff);
   // Debug: Printing stepsErrAcc and stepsDiff (int)
   // Serial.println(stepsErrAcc);
   // Serial.println(int(stepsDiff));
   
   // Check sign and move
-  int dir = checkSign(stepsDiff);
-  for (long i=0; i<=abs(stepsDiff-1); i++){ 
-    myStepper.step(dir);
-    delay(stepDelay);
-  }
+  //int dir = checkSign(stepsDiff);
+  //for (long i=0; i<=abs(stepsDiff-1); i++){ 
+  //  myMotor.step(dir);
+  //  delay(stepDelay);
+  //} //rmb to comment out this bracket to properly exclude the for loop
   // Current angle is now the target angle
   EEPROM_writeAnything(EEloc_angleCurrent, target);
+  Serial.print("outside: ");
+  Serial.println(myMotor.readAngle());
   return 1;
 }
 
@@ -458,4 +462,3 @@ int pinBlink(unsigned long timeStep, int pin){
   
   return 1;    // Exit process
 }
-
