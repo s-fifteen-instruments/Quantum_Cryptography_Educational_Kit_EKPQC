@@ -9,16 +9,13 @@ GUI for Receiver program
 
 import sys
 import glob
+import serial
 import time
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtCore import QTimer
-import pyqtgraph as pg
 import motorControls as mc
-import queue
-import threading
-import json
 import numpy as np
 
 REFRESH_RATE = 100 # 100 ms
@@ -32,6 +29,36 @@ def insanity_check(number, min_value, max_value):
 		return min_value
 	else:
 		return number
+
+# serial_ports function from:
+# https://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
+def serial_ports():
+    """ Lists serial port names
+
+        :raises EnvironmentError:
+            On unsupported or unknown platforms
+        :returns:
+            A list of the serial ports available on the system
+    """
+    if sys.platform.startswith('win'):
+        ports = ['COM%s' % (i + 1) for i in range(256)]
+    elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+        # this excludes your current terminal "/dev/tty"
+        ports = glob.glob('/dev/tty[A-Za-z]*')
+    elif sys.platform.startswith('darwin'):
+        ports = glob.glob('/dev/tty.*')
+    else:
+        raise EnvironmentError('Unsupported platform')
+
+    result = []
+    for port in ports:
+        try:
+            s = serial.Serial(port)
+            s.close()
+            result.append(port)
+        except (OSError, serial.SerialException):
+            pass
+    return result
 
 class MyWindowClass(QMainWindow, form_class):
 
@@ -72,7 +99,7 @@ class MyWindowClass(QMainWindow, form_class):
 
 
 		# Gets a list of avaliable serial ports to connect to and adds to combo box
-		self.ports = glob.glob('/dev/ttyACM*') + glob.glob('/dev/ttyUSB*')
+		self.ports = serial_ports()
 		self.deviceBox.addItems(self.ports)
 
 		# Initialise plots
@@ -127,10 +154,7 @@ class MyWindowClass(QMainWindow, form_class):
 			self.update_offset(self.offset)
 			self.update_angle(self.curr_angle)
 			self.deviceRunning = not self.deviceRunning
-
-
 		else:
-
 			#Stop the device
 			self.deviceRunning = not self.deviceRunning
 			self.statusbar.showMessage("Device Stopped")
