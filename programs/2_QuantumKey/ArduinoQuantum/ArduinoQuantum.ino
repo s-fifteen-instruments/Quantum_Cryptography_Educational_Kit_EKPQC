@@ -7,7 +7,8 @@
 
 #include <EEPROM.h>
 #include "EEPROMAnything.h"
-#include <Stepper.h>
+//#include <Stepper.h>
+#include <PolarizerMotor.h>
 #include <Entropy.h>
 
 // Important parameters
@@ -15,7 +16,7 @@ const int seqLength = 16;  // Polarisation sequence length (16 bit)
 const int pinLsr = 4;      // Laser pin
 const int pinDeb = 13;     // Debugging pin (LED on the board)
 const int sensorLoc = 0;   // A0
-const int catchTh = 200;   // Threshold in CATCH command ~1V.
+const int catchTh = 570;   // Threshold in CATCH command 200 = ~1V.
 
 // Parameters
 const int stepDelay = 2; // 2 ms
@@ -35,10 +36,11 @@ int polSeq[seqLength] = {0}; // int datatype, in multiples of 45 degrees.
 const int seqStepTime = 1500;  // Time between each steps. Def: 1500 ms
 const int seqInitTarget = 1;   // Set initialization polarisation for seq always (D)
 const int seqPinStart = 1200;  // Time in sequence to start / ON the pin
-const int seqPinStop = 1400;   // Time in sequence to start / ON the pin
+const int seqPinStop = 1400;   // Time in sequence to stop / OFF the pin
 const int seqReadTime = 1300;  // 1300 ms (hopefully in the middle of the laser pulse)
 const int seqSyncBlink = 500;  // 200 ms (to initialise the signal)
-
+//int moveType;
+int moveStepper(int = 1);
     
 // To deal with floating point rounding off error
 // in the conversion between angle and steps,
@@ -47,13 +49,14 @@ float stepsErrAcc = 0;
     
 // initialize the stepper library on pins 8 through 11:
 // need to swap pins 10 and 9 (due to wiring reason)
-Stepper myStepper(stepsPerRevolution,8,10,9,11);            
+PolarizerMotor myMotor(8,9);
 
 void setup() {
   // set the speed at 60 rpm: 
-  myStepper.setSpeed(stepSpeed);
+  myMotor.initialize();
+  // myMotor.setSpeed(stepSpeed);
   // initialize the serial port:
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.setTimeout(serialTimeout);
   // Obtain the polarisation offset from EEProm
   EEPROM_readAnything(EEloc_polOffset, polOffset);
@@ -67,7 +70,9 @@ void setup() {
 void loop() {
   while (!Serial.available()); // Listen to serial input
   char serbuf[8] = ""; // Reinitialise buffer (8 bytes)
-  Serial.readBytesUntil(' ', serbuf, 8); // Until whitespace
+  Serial.readBytesUntil(' ', serbuf, 15); // Until whitespace
+  // Serial.print("serbuf is:"); // Debug
+  // Serial.println(serbuf); // Debug
   // Obtain which input command (enumerated)
   int enumc = -1; // default choice
   int maxChoice = 18;
@@ -83,14 +88,15 @@ void loop() {
   }
   
   // Declaring some other parameters
-  char valbuf[8] = "";      // Buffer to receive chartype value from serial
+  char valbuf[16] = "";      // Buffer to receive chartype value from serial
   int angleTarget;
   int setPolTo; 
   float polFloat;
   char polseqbuf[seqLength] = ""; // Buffer to receive chartype pol sequences from serial 
   int polSeqMod[seqLength] = {0}; // Polarisation sequence within the range (0,3).       
   int sensorValue;
-  float sensorVoltage; 
+  float sensorVoltage;
+  
   
   // Switching between different cases
   switch(enumc){
@@ -120,8 +126,10 @@ void loop() {
     case 1: //SETANG X
       // listen again (for angle)
       while (!Serial.available());
-      Serial.readBytesUntil(' ', valbuf, 8); // Until whitespace
+      Serial.readBytesUntil(' ', valbuf, 15); // Until whitespace
       angleTarget = atoi(valbuf);
+      // Serial.print("angleTarget is:"); //Debug
+      // Serial.println(angleTarget); // Debug
       EEPROM_writeAnything(EEloc_angleTarget, angleTarget);
       moveStepper();
       Serial.println("OK");
@@ -135,7 +143,7 @@ void loop() {
     case 3: //SETPOL X
       // listen again (for polarisation)
       while (!Serial.available());
-      Serial.readBytesUntil(' ', valbuf, 8); // Until whitespace
+      Serial.readBytesUntil(' ', valbuf, 15); // Until whitespace
       setPolTo = (int)valbuf[0] - 48; // Only convert the first char: the rest are bullshit
       if (setPolTo < 0 || setPolTo > 3){
         Serial.println("Input error detected.");
@@ -157,7 +165,7 @@ void loop() {
     case 5: //SETHOF X
       // listen again (for ofset value)
       while (!Serial.available());
-      Serial.readBytesUntil(' ', valbuf, 8); // Until whitespace
+      Serial.readBytesUntil(' ', valbuf, 15); // Until whitespace
       polOffset = atoi(valbuf);
       EEPROM_writeAnything(EEloc_polOffset, polOffset);
       Serial.println("OK");
@@ -171,7 +179,9 @@ void loop() {
     case 7: //POLSEQ X
       // Listen for the sequence string
       while (!Serial.available());
-      Serial.readBytesUntil(' ', polseqbuf, seqLength); // Until seqLength  
+      Serial.readBytesUntil(' ', polseqbuf, seqLength); // Until seqLength
+      //Serial.print("polseqbuf is:"); // Debug
+      //Serial.println(polseqbuf); // Debug
       transCharSeq(polseqbuf, polSeqMod, seqLength);    // Translate from char[] to int[]
       polToSeq(polSeqMod, seqLength, polSeq);
       // // Debug (print the morphed sequence)
@@ -200,18 +210,20 @@ void loop() {
       
     case 11: //LASON
       digitalWrite(pinLsr, HIGH);      
-      Serial.println("OK");
+      Serial.println("LASER ON!");
       break;
       
     case 12: //LASOFF
       digitalWrite(pinLsr, LOW);      
-      Serial.println("OK");
+      Serial.println("LASER OFF!");
       break;
       
     case 13: //VOLT?
       sensorValue = analogRead(sensorLoc);
       sensorVoltage = sensorValue * (5.0 / 1023.0);
-      Serial.println(sensorVoltage,3);
+      // Serial.print("Val: ");
+      Serial.println(sensorValue);
+      // Serial.println(sensorVoltage,3);
       break;
       
     case 14: //CATCH
@@ -270,6 +282,10 @@ unsigned long lasCatch(){
   while (sensorValue < catchTh){
     sensorValue = analogRead(sensorLoc);
   }
+  Serial.print("sensorVal: ");
+  Serial.println(sensorValue);
+  Serial.print("catchTh: ");
+  Serial.println(catchTh);
   return millis();
 }
 
@@ -280,32 +296,28 @@ int specialRandom(int array[], int arrayLength, int maxVal){
   }
 }
 
-int moveStepper(){
+int moveStepper(int moveType) {
+  // Serial.print("moveStepper called with moveType:");
+  // Serial.println(moveType);
   int current;
   int target;
+  // read current and target angles from Arduino's EEPROM memory
   EEPROM_readAnything(EEloc_angleCurrent, current);
   EEPROM_readAnything(EEloc_angleTarget, target);
-  double stepsDiff = (target - current) * (float) (stepsPerRevolution / 360.0);
-  // Debug: Printing how many steps it moves.
-  // Serial.print("Moving ");
-  // Serial.println(stepsDiff);
-  // Moving 
-  
-  // Floating point consideration
-  stepsDiff += stepsErrAcc;
-  stepsErrAcc = stepsDiff - int(stepsDiff);
-  // Debug: Printing stepsErrAcc and stepsDiff (int)
-  // Serial.println(stepsErrAcc);
-  // Serial.println(int(stepsDiff));
-  
-  // Check sign and move
-  int dir = checkSign(stepsDiff);
-  for (long i=0; i<=abs(stepsDiff-1); i++){ 
-    myStepper.step(dir);
-    delay(stepDelay);
+  if (moveType==2) {
+//     Serial.println("Calling approachAngle");
+    myMotor.approachAngle(target);
+  } else {
+    //Serial.println("Calling gotoAngle");
+    //Serial.print("target is:");
+    //Serial.println(target);
+    //Serial.print(myMotor.readAngle());
+    myMotor.gotoAngle(target);
   }
   // Current angle is now the target angle
   EEPROM_writeAnything(EEloc_angleCurrent, target);
+  // Serial.print("outside: ");
+  // Serial.println(myMotor.readAngle());
   return 1;
 }
 
@@ -355,7 +367,7 @@ int polToSeq(int polSeqMod[], int seqLength, int polSeq[]){
 
 int runSequence(int mode){
   // Mode 0 (or anything else): Plain sequence + blink on pin 13 (debugging)
-  // Mode 1: Mode 1 + laser + sync signal (TX)
+  // Mode 1: Mode 0 + laser + sync signal (TX)
   // Mode 2: Mode 1 + sense + triggered   (RX)
   int angleTarget;
   unsigned long timeNow = 0;
@@ -367,7 +379,9 @@ int runSequence(int mode){
   EEPROM_readAnything(EEloc_polOffset, polOffset);   // Update the polarisation offset
   angleTarget = seqInitTarget * 45 + polOffset;
   EEPROM_writeAnything(EEloc_angleTarget, angleTarget);
-  moveStepper();
+  // Move motor using the more precise approachAngle function 
+  //(default is gotoAngle with up to 5 deg variation)
+  moveStepper(2);
   
   if (mode == 1){
     timeStep = millis() + seqSyncBlink; // Get the next time step
@@ -381,7 +395,7 @@ int runSequence(int mode){
     digitalWrite(pinLsr, LOW);         
     timeStep += seqSyncBlink; // Set the main sequence trigger
   } else if (mode == 2) {
-    // Serial.println("Listen for sync pulse."); // debug
+    Serial.println("Listen for sync pulse."); // debug
     timeStep = lasCatch();    // Caught the sync signal
     timeStep+= 2 * seqSyncBlink;
   } else{
@@ -398,6 +412,7 @@ int runSequence(int mode){
     // Move to the prescribed angle
     angleTarget = polSeq[i] * 45 + polOffset;
     EEPROM_writeAnything(EEloc_angleTarget, angleTarget);
+    // Serial.println("Moving to prescribed angle");
     moveStepper();
     // Perform operation on the laser / sensor
     if (mode == 1){
@@ -458,4 +473,3 @@ int pinBlink(unsigned long timeStep, int pin){
   
   return 1;    // Exit process
 }
-

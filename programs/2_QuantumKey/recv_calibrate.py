@@ -1,5 +1,3 @@
-#!/usr/bin/env python2
-
 '''
 Python wrapper program to calibrate the quantum / polarisation
 signal transmission (for sender).
@@ -12,23 +10,24 @@ import time
 import numpy as np
 
 # Parameters
-sender_seq = '0123012301230123'
+sender_seq = '0000111122223333 '
 
 # Obtain device location
-devloc_file = '../devloc_quantum.txt'
-with open(devloc_file) as f:
-    content = f.readlines()[0]
-    if content[-1] == '\n':  # Remove an extra \n
-        content = content[:-1]
-serial_addr = content
+# devloc_file = 'devloc_quantum.txt'
+# with open(devloc_file) as f:
+#     content = f.readlines()[0]
+#     if content[-1] == '\n':  # Remove an extra \n
+#         content = content[:-1]
+# serial_addr = content
 
 # Other parameters declarations
-baudrate = 9600      # Default in Arduino
+baudrate = 115200    # Default in Arduino
 timeout = 0.1        # Serial timeout (in s).
+serial_addr = "COM12"
 
 # Starts the program
-print "Polarisation Calibrator (Receiver)"
-print "Uploading sequence to Arduino..."
+print("Polarisation Calibrator (Receiver)")
+print("Uploading sequence to Arduino...")
 
 # Opens the sender side serial port
 receiver = serial.Serial(serial_addr, baudrate, timeout=timeout)
@@ -36,51 +35,75 @@ receiver = serial.Serial(serial_addr, baudrate, timeout=timeout)
 # Wait until the serial is ready
 # Note: for some computer models, particularly MacOS, the program cannot
 # talk to the serial directly after openin. Need to wait 1-2 second.
-print "Opening the serial port..."
+print("Opening the serial port...")
 time.sleep(2)
-print "Done\n"
+print("Done\n")
+
+print("Flushing serial port")
+receiver.reset_input_buffer()
+receiver.reset_output_buffer()
+print("Flushed")
 
 # Send the sequence
-receiver.write('POLSEQ ' + sender_seq)
+seq = 'POLSEQ ' + sender_seq
+print('seq is:{}'.format(seq))
+receiver.write(seq.encode())
 
 # Block until receive reply
 while True:
     if receiver.in_waiting:
-        print receiver.readlines()[0] # Should display OK
+        print(receiver.readlines()[0].decode()) # Should display OK
         break
 
 # Run the sequence
-print "Listen for incoming signal..."
-receiver.write('RXSEQ ')
+print("Listen for incoming signal...")
+rxseq = 'RXSEQ '
+receiver.write(rxseq.encode())
 
 # Block until receive 1st reply
 while True:
     if receiver.in_waiting:
-        res_str = receiver.readlines()[0] # Should display lots of nonsense
-        resA = np.array(res_str.split()).astype(np.int)
-        print "Measurement done"
-        print " "
+        # print('in_wait'.format(receiver.in_waiting))
+        # time.sleep(100)
+        print("entering if block")
+        tmp = receiver.readlines() # Should display lots of nonsense
+        print("text:", tmp)
+        for val in tmp:
+            print(val)
+        tmp2 = tmp[0].decode()
+        print("text2:", tmp2)
+        res_str = tmp2
+        print('res_str is: {}'.format(res_str))
+        if res_str:
+            try:
+                resA = np.array(res_str.split()).astype(np.int32)
+                print("resA is: {}".format(str(resA)))
+            except ValueError as e: # To ignore all the debug lines
+                print(e)
+                continue
+        print("Measurement done")
+        print(" ")
         break
 
 # Printing cosmetics
-print "                    Receiver         "
-print "           |  H  |  D  |  V  |  A  | "
-print "       | H | " + str(resA[0]).rjust(3,' ') + " | " + str(resA[1]).rjust(3,' ') + " | " + str(resA[2]).rjust(3,' ') + " | "+ str(resA[3]).rjust(3,' ') + " | "
-print "Sender | D | " + str(resA[4]).rjust(3,' ') + " | " + str(resA[5]).rjust(3,' ') + " | " + str(resA[6]).rjust(3,' ') + " | "+ str(resA[7]).rjust(3,' ') + " | "
-print "       | V | " + str(resA[8]).rjust(3,' ') + " | " + str(resA[9]).rjust(3,' ') + " | " + str(resA[10]).rjust(3,' ') + " | "+ str(resA[11]).rjust(3,' ') + " | "
-print "       | A | " + str(resA[12]).rjust(3,' ') + " | " + str(resA[13]).rjust(3,' ') + " | " + str(resA[14]).rjust(3,' ') + " | "+ str(resA[15]).rjust(3,' ') + " | "
-print " "
+print("                    Receiver         ")
+print("           |  H  |  D  |  V  |  A  | ")
+print("       | H | " + str(resA[0]).rjust(3,' ') + " | " + str(resA[1]).rjust(3,' ') + " | " + str(resA[2]).rjust(3,' ') + " | "+ str(resA[3]).rjust(3,' ') + " | ")
+print("Sender | D | " + str(resA[4]).rjust(3,' ') + " | " + str(resA[5]).rjust(3,' ') + " | " + str(resA[6]).rjust(3,' ') + " | "+ str(resA[7]).rjust(3,' ') + " | ")
+print("       | V | " + str(resA[8]).rjust(3,' ') + " | " + str(resA[9]).rjust(3,' ') + " | " + str(resA[10]).rjust(3,' ') + " | "+ str(resA[11]).rjust(3,' ') + " | ")
+print("       | A | " + str(resA[12]).rjust(3,' ') + " | " + str(resA[13]).rjust(3,' ') + " | " + str(resA[14]).rjust(3,' ') + " | "+ str(resA[15]).rjust(3,' ') + " | ")
+print(" ")
 
 # Calculating the mean
 mean = np.average(resA)
-print "  The mean is " + str(round(mean, 3))
+print("  The mean is " + str(round(mean, 3)))
 
 # Construct the result array-ish
 norm_fac = 2 * mean
 theoA = norm_fac*np.array([1, 0.5, 0, 0.5, 0.5, 1, 0.5, 0, 0, 0.5, 1, 0.5, 0.5, 0, 0.5, 1])
 delta = np.abs(theoA-resA)
 deviation = np.sum(delta) / (16 * mean)
-print "  Signal degradation is " + str(round(deviation, 3))
-print "  "
+print("  Signal degradation is " + str(round(deviation, 3)))
+print("  ")
 
 # Print last statement and exits the program
