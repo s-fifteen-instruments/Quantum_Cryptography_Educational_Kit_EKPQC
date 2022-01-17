@@ -32,13 +32,13 @@ sender = serial.Serial(serial_addr, baudrate, timeout=timeout)
 # Wait until the serial is ready
 # Note: for some computer models, particularly MacOS, the program cannot
 # talk to the serial directly after openin. Need to wait 1-2 second.
-print "Opening the serial port..."
+print("Opening the serial port...")
 time.sleep(2)
-print "Done\n"
+print("Done\n")
 
 # Starts the program
-print "Alice, Are you ready? This is the key sender program."
-print "Randomising key bits and basis bits using Arduino"
+print("Alice, Are you ready? This is the key sender program.")
+print("Randomising key bits and basis bits using Arduino")
 
 # Randomising the sequence
 sender.write('RNDSEQ ')
@@ -46,10 +46,10 @@ sender.write('RNDSEQ ')
 # Block until receive reply
 while True:
     if sender.in_waiting:
-        print sender.readlines()[0] # Should display OK
+        print(sender.readlines()[0]) # Should display OK
         break
 
-print "Arduino says he/she likes to choose the following bits:"
+print("Arduino says he/she likes to choose the following bits:")
 
 # Find out what is the key
 sender.write('SEQ? ')
@@ -70,18 +70,18 @@ for bit in reply_str:
 # Giving the reply in HEX format
 val_hex = tohex(int("0b"+val_str, 0), 16) # Get int, and convert to 16 bit hex
 bas_hex = tohex(int("0b"+bas_str, 0), 16) # Get int, and convert to 16 bit hex
-print "Value bits (in hex):", val_hex[2:].zfill(4)
-print "Basis bits (in hex):", bas_hex[2:].zfill(4)
+print("Value bits (in hex):", val_hex[2:].zfill(4))
+print("Basis bits (in hex):", bas_hex[2:].zfill(4))
 
 # Run the sequence
-print "\nRunning the sequence..."
+print("\nRunning the sequence...")
 sender.write('TXSEQ ')
 
 # Block until receive reply
 while True:
     if sender.in_waiting:
-        print sender.readlines()[0] # Should display OK
+        print(sender.readlines()[0]) # Should display OK
         break
 
 # Print last statement and exits the program
-print "Task done. Please perform key sifting with Bob via public channel."
+print("Task done. Please perform key sifting with Bob via public channel.")

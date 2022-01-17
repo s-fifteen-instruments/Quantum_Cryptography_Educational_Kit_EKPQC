@@ -12,11 +12,12 @@ import sys
 import glob
 import time
 
-from PyQt4 import QtGui, uic
-from PyQt4.QtCore import QTimer
+from PyQt5 import uic
+from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtCore import QTimer
 import pyqtgraph as pg
 import motorControls as mc
-import Queue
+import queue
 import threading
 import json
 import numpy as np
@@ -33,7 +34,7 @@ def insanity_check(number, min_value, max_value):
     else:
         return number
 
-class MyWindowClass(QtGui.QMainWindow, form_class):
+class MyWindowClass(QMainWindow, form_class):
 
     def __init__(self, parent=None):
 
@@ -46,7 +47,7 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
         self.scanned = False
 
         # Declaring GUI window
-        QtGui.QMainWindow.__init__(self, parent)
+        QMainWindow.__init__(self, parent)
         self.setupUi(self)
         #self.initialiseParameters()
 
@@ -119,7 +120,7 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
             #Initialising the motors
             self.curr_angle = int(self.motor.get_angle())
             self.offset  = int(self.motor.get_offset())
-            print(self.offset)
+            print((self.offset))
             self.update_offset(self.offset)
             self.update_angle(self.curr_angle)
             self.deviceRunning = not self.deviceRunning
@@ -204,13 +205,13 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
         if self.deviceRunning:
             self.buttonStart_clicked()
 
-        print "Closing the program ... Good bye!"
+        print("Closing the program ... Good bye!")
         self.deviceRunning = False
         time.sleep(0.5)
 
 if __name__ == '__main__':
 
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     myWindow = MyWindowClass(None)
     myWindow.show()
     app.aboutToQuit.connect(myWindow.cleanUp)

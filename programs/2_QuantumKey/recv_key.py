@@ -52,7 +52,7 @@ receiver.write('RNDBAS ')
 # Block until receive reply
 while True:
     if receiver.in_waiting:
-        print(receiver.readlines()[0]) # Should display OK
+        print((receiver.readlines()[0])) # Should display OK
         break
 
 print("Arduino says he/she likes to choose the following bits:")
@@ -68,7 +68,7 @@ while True:
 
 # Giving the reply in HEX format
 bas_hex = tohex(int("0b"+bas_str, 0), 16) # Get int, and convert to 16 bit hex
-print("Basis bits (in hex):", bas_hex[2:].zfill(4))
+print(("Basis bits (in hex):", bas_hex[2:].zfill(4)))
 
 # Run the sequence
 print("\nRunning the sequence and performing measurement...")
@@ -90,7 +90,7 @@ for val in meas_arr:
         res_str += '1'
 
 res_hex = tohex(int("0b"+res_str, 0), 16) # Get int, and convert to 16 bit hex
-print("Measurement result bits (in hex):", res_hex[2:].zfill(4))
+print(("Measurement result bits (in hex):", res_hex[2:].zfill(4)))
 # print meas_arr # Debug
 # print res_str # Debug
 

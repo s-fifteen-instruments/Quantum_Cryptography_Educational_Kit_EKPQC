@@ -1,0 +1,11 @@
+# ignore backup files
+*.bak
+
+# virtual environments
+venv/
+.venv/
+
+# Caches
+__pycache__
+.mypy_cache
+.ipynb_checkpoints

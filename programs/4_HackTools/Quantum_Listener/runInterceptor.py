@@ -48,21 +48,21 @@ def apply_mask_16(unkey_bin,matchbs_bin):
 	# matchbs_bin = np.binary_repr((int(matchbs_hex, 0)), width=16)
 	siftmask_bin = ''
 	for i in range(16): # 16 bits
-	    if matchbs_bin[i] == '0' :
-	        siftmask_bin += 'X'
-	    elif matchbs_bin[i] == '1':
-	        siftmask_bin += unkey_bin[i]
+		if matchbs_bin[i] == '0' :
+			siftmask_bin += 'X'
+		elif matchbs_bin[i] == '1':
+			siftmask_bin += unkey_bin[i]
 	#print "\nMatched key bits:",\
 	#    siftmask_bin[:4], siftmask_bin[4:8], siftmask_bin[8:12], siftmask_bin[12:16]
 	# Remove all the X'es
 	siftkey_bin = ''
 	siftkey_len = 0
 	for bit in siftmask_bin:
-	    if bit == 'X':
-	        pass
-	    else:
-	        siftkey_bin += bit
-	        siftkey_len += 1
+		if bit == 'X':
+			pass
+		else:
+			siftkey_bin += bit
+			siftkey_len += 1
 	#siftkey_bin = siftkey_bin.zfill(16) # pad to make length 16 bit
 	return siftkey_bin
 
@@ -100,8 +100,8 @@ def kclassify(data, numClasses=5):
 	means = []
 	# spreads = []
 	for label in np.unique(labels):
-	    means.append(np.mean(data[labels==label]))
-	    # spreads.append(np.std(data[labels==label]))
+		means.append(np.mean(data[labels==label]))
+		# spreads.append(np.std(data[labels==label]))
 	return np.array(labels), np.array(means)
 
 def kclassify2D(x: np.ndarray,y: np.ndarray, numClasses=5):
@@ -132,10 +132,10 @@ def kclassify2D(x: np.ndarray,y: np.ndarray, numClasses=5):
 	classes = np.unique(labels)
 
 	for label in classes:
-	    means.append(np.mean(data[:,0][labels==label]))
-	    means2.append(np.mean(data[:,1][labels==label]))
-	    spreads.append(np.std(data[:,0][labels==label]))
-	    spreads2.append(np.std(data[:,1][labels==label]))
+		means.append(np.mean(data[:,0][labels==label]))
+		means2.append(np.mean(data[:,1][labels==label]))
+		spreads.append(np.std(data[:,0][labels==label]))
+		spreads2.append(np.std(data[:,1][labels==label]))
 	# print('kmeans labels = {}'.format(list(labels)))
 	return np.array(list(labels)), np.array(classes), np.c_[means,means2], np.c_[spreads,spreads2]
 
@@ -149,26 +149,26 @@ def hist(signals, numbins=200):
 	return freq, bins, step
 
 def remove_adjacent_duplicates(a):
-    undup = []
-    # a = np.array(a)
-    # print 'shape = {}'.format(a.shape)
-    for i in np.arange(len(a)):
-        if i==0: #no previous element to compare with, first element gets included automatically
-            undup.append(a[i])
-        else:
-            if a[i] != a[i-1]:
-                undup.append(a[i])
-    return np.array(undup)
+	undup = []
+	# a = np.array(a)
+	# print 'shape = {}'.format(a.shape)
+	for i in np.arange(len(a)):
+		if i==0: #no previous element to compare with, first element gets included automatically
+			undup.append(a[i])
+		else:
+			if a[i] != a[i-1]:
+				undup.append(a[i])
+	return np.array(undup)
 
 def manualClassify(voltage, voltageClasses):
-    """
-    returns the class in aClasses that matches most to an element in a
-    voltageClasses = [0,v0,v1,v2,v3]
-    """
-    # relabels indices 1,2,3,4 to polarisation labels 0,1,2,3
-    # polarisationLabels = [0,0,1,2,3]
-    # argmin finds the element position in voltageClasses that best matches voltage
-    return np.argmin((voltage-voltageClasses)**2)
+	"""
+	returns the class in aClasses that matches most to an element in a
+	voltageClasses = [0,v0,v1,v2,v3]
+	"""
+	# relabels indices 1,2,3,4 to polarisation labels 0,1,2,3
+	# polarisationLabels = [0,0,1,2,3]
+	# argmin finds the element position in voltageClasses that best matches voltage
+	return np.argmin((voltage-voltageClasses)**2)
 
 def remove_header(signals,numConstant=3):
 	"""
@@ -181,7 +181,7 @@ def remove_header(signals,numConstant=3):
 	stops = np.where(ds<0)[0]
 
 
-	print(starts, '\n', stops)
+	print((starts, '\n', stops))
 
 	# plt.figure()
 	# plt.scatter(starts,stops)
@@ -322,11 +322,11 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
 		# print(tabulate(zip(self.classes, self.voltageClasses2D, self.voltageSpreads2D)))
 
 		classificationTable = tabulate(
-			zip(self.alphabeticalClasses,
+			list(zip(self.alphabeticalClasses,
 				self.voltageClasses2D[:,0],
 				self.voltageSpreads2D[:,0],
 				self.voltageClasses2D[:,1],
-				self.voltageSpreads2D[:,1]),
+				self.voltageSpreads2D[:,1])),
 			headers=['cluster','signal1(V)','error1(V)','signal2(V)','error2(V)']
 		)
 		self.text_ClusterReport.setText(classificationTable)

@@ -49,9 +49,9 @@ def send4BytesC(message_str):
         time.sleep(rep_wait_time)
         deviceC.write('SEND ') # Flag to send
         deviceC.write(message_str)
-        print message_str
+        print(message_str)
     else:
-        print "The message is not 4 bytes. Please check again"
+        print("The message is not 4 bytes. Please check again")
 
 def recv4BytesC():
     deviceC.reset_input_buffer() # Flush all the garbages
@@ -67,19 +67,19 @@ def recv4BytesC():
             elif state == 1:
                 break
     # Convert to ASCII string
-    hex_list = map(''.join, zip(*[iter(hex_string)]*2))
+    hex_list = list(map(''.join, list(zip(*[iter(hex_string)]*2))))
     ascii_string = "".join([chr(int("0x"+each_hex,0)) for each_hex in hex_list])
-    print ascii_string
+    print(ascii_string)
     return ascii_string
 
 def recvKeyQ():
-    print "Generating random basis choices..."
+    print("Generating random basis choices...")
     # Randomising the sequence
     deviceQ.write('RNDBAS ')
     # Block until receive reply
     while True:
         if deviceQ.in_waiting:
-            print deviceQ.readlines()[0][:-1] # Should display OK
+            print(deviceQ.readlines()[0][:-1]) # Should display OK
             break
     # Find out what is the key
     deviceQ.write('SEQ? ')
@@ -89,14 +89,14 @@ def recvKeyQ():
             bas_str = deviceQ.readlines()[0][:-1] # Remove the /n
             break
     # Run the sequence
-    print "Running the sequence and performing measurement..."
+    print("Running the sequence and performing measurement...")
     deviceQ.write('RXSEQ ')
     # Block until receive reply
     while True:
         if deviceQ.in_waiting:
             mes_str = deviceQ.readlines()[0][:-1] # Remove the /n
             break
-    print "Finished..."
+    print("Finished...")
     # Obtain the measured bits
     mes_arr = mes_str.split()
     res_str = ''
@@ -105,13 +105,13 @@ def recvKeyQ():
             res_str += '0'
         else:               # Lower than threshold -> 1
             res_str += '1'
-    print res_str, bas_str
+    print(res_str, bas_str)
     return res_str, bas_str
 
 def keySiftBobC(resB_str, basB_str):
     # Get ready confirmation from Alice
     recv4BytesC()
-    print "Alice is ready! Performing key sifting with Alice..."
+    print("Alice is ready! Performing key sifting with Alice...")
     # Zeroth step: convert the bin string repr to 32 bit int
     resB_int = int("0b"+resB_str, 0)
     basB_int = int("0b"+basB_str, 0)
@@ -137,7 +137,7 @@ def keySiftBobC(resB_str, basB_str):
         else:
             siftkey_str += bit
     # Return the final sifted key
-    print siftmask_str, siftkey_str
+    print(siftmask_str, siftkey_str)
     return siftkey_str
 
 # Other parameters declarations
@@ -152,40 +152,40 @@ deviceQ = serial.Serial(serial_addrQ, baudrate, timeout=timeout)
 # Wait until the serial is ready
 # Note: for some computer models, particularly MacOS, the program cannot
 # talk to the serial directly after openin. Need to wait 1-2 second.
-print "Opening the serial port..."
+print("Opening the serial port...")
 time.sleep(2)
-print "Done\n"
+print("Done\n")
 
 # Secure key string (binary)
 seckey_bin = ""
 n_attempt = 1
 
 # Start of the UI
-print "Hi Bob, are you ready? Let's make the key!"
+print("Hi Bob, are you ready? Let's make the key!")
 
 try:
     # Testing the public channel
-    print "\nTesting the public channel..."
+    print("\nTesting the public channel...")
 
-    print "Alice sends", recv4BytesC()
+    print("Alice sends", recv4BytesC())
 
-    print "You reply --OK!!--"
+    print("You reply --OK!!--")
     send4BytesC("OK!!")
 
-    print "\nPublic channel seems okay... Sending the quantum keys..."
+    print("\nPublic channel seems okay... Sending the quantum keys...")
 
     while True:
-        print "\nAttempt", n_attempt
+        print("\nAttempt", n_attempt)
         res_str, bas_str = recvKeyQ()
         key = keySiftBobC(res_str, bas_str)
         seckey_bin = seckey_bin + key
         if len(seckey_bin) >= 32: # If the key is longer than 32 bits, stop operation
             break
         else:
-            print "Done! You've got", len(key), "bits. Total length:", len(seckey_bin), "bits."
+            print("Done! You've got", len(key), "bits. Total length:", len(seckey_bin), "bits.")
             n_attempt +=1
 
-    print "DONE. The task is completed."
+    print("DONE. The task is completed.")
 
     # You've got the key!
     seckey_bin = seckey_bin[:32] # Trim to 32 bits
@@ -193,8 +193,8 @@ try:
     # Some intrepreter introduces L at the end (which probably means long). Will remove them (cosmetic reason)
     if seckey_hex[-1] == "L":
         seckey_hex = seckey_hex[:-1]
-    print "The 32 bit secret key is (in hex):", seckey_hex[2:].zfill(8)
-    print "\n Congrats. Use the key wisely. Thank you!"
+    print("The 32 bit secret key is (in hex):", seckey_hex[2:].zfill(8))
+    print("\n Congrats. Use the key wisely. Thank you!")
 
 except KeyboardInterrupt:
     # End of program

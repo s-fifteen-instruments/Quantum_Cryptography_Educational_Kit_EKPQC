@@ -27,13 +27,13 @@ receiver = serial.Serial(serial_addr, baudrate, timeout=timeout)
 # Wait until the serial is ready
 # Note: for some computer models, particularly MacOS, the program cannot
 # talk to the serial directly after openin. Need to wait 1-2 second.
-print "Opening the serial port..."
+print("Opening the serial port...")
 time.sleep(2)
-print "Done\n"
+print("Done\n")
 
-print "IR Listener for Qcumbers"
-print "To exit the program, use Ctrl+C"
-print "Waiting for data ... "
+print("IR Listener for Qcumbers")
+print("To exit the program, use Ctrl+C")
+print("Waiting for data ... ")
 
 receiver.reset_input_buffer() # Flush all the garbages
 receiver.write('RECV ') # Flag to recv
@@ -58,7 +58,7 @@ while True:
                     if len(hex_string) < 8:
                         hex_string = hex_string.zfill(8)
                     # Convert to ASCII string
-                    hex_list= map(''.join, zip(*[iter(hex_string)]*2))
+                    hex_list= list(map(''.join, list(zip(*[iter(hex_string)]*2))))
                     ascii_string = "".join([chr(int("0x"+each_hex,0)) for each_hex in hex_list])
                     sys.stdout.write(ascii_string)
                     sys.stdout.flush()

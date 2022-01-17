@@ -29,12 +29,12 @@ device = serial.Serial(serial_addr, baudrate, timeout=timeout)
 # Wait until the serial is ready
 # Note: for some computer models, particularly MacOS, the program cannot
 # talk to the serial directly after openin. Need to wait 1-2 second.
-print "Opening the serial port..."
+print("Opening the serial port...")
 time.sleep(2)
-print "Done\n"
+print("Done\n")
 
-print "Qcumber ChatBox v1.00"
-print "To exit the program, use Ctrl+C"
+print("Qcumber ChatBox v1.00")
+print("To exit the program, use Ctrl+C")
 
 # Always listening, except when it is not...
 while True:
@@ -42,7 +42,7 @@ while True:
         msg_string = "\n" +\
                      "You are now in sending mode. To change to listening mode, press ENTER.\n" +\
                      "Write the message you want to send below: \n"
-        tosend_string = raw_input(msg_string)
+        tosend_string = input(msg_string)
         if tosend_string == "": # Nothing to send through
             pass
         else:   # Send the message lor
@@ -93,7 +93,7 @@ while True:
                         if len(hex_string) < 8:
                             hex_string = hex_string.zfill(8)
                         # Convert to ASCII string
-                        hex_list= map(''.join, zip(*[iter(hex_string)]*2))
+                        hex_list= list(map(''.join, list(zip(*[iter(hex_string)]*2))))
                         ascii_string = "".join([chr(int("0x"+each_hex,0)) for each_hex in hex_list])
                         sys.stdout.write(ascii_string)
                         sys.stdout.flush()

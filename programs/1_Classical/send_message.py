@@ -29,9 +29,9 @@ sender = serial.Serial(serial_addr, baudrate, timeout=timeout)
 # Wait until the serial is ready
 # Note: for some computer models, particularly MacOS, the program cannot
 # talk to the serial directly after openin. Need to wait 1-2 second.
-print "Opening the serial port..."
+print("Opening the serial port...")
 time.sleep(2)
-print "Done\n"
+print("Done\n")
 
 while True:
     try:
@@ -39,7 +39,7 @@ while True:
                      "NEC-string Protocol Sender Qcumber v1.00 \n" +\
                      "To exit the program, use Ctrl+C \n" +\
                      "Write your message here: \n"
-        tosend_string = raw_input(msg_string)
+        tosend_string = input(msg_string)
         # Iterate and send the string
         sender.write('SEND ') # Flag to send
         sender.write(b'\x02\x02\x02\x02') # Start of text
