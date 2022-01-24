@@ -16,7 +16,7 @@ const int seqLength = 16;  // Polarisation sequence length (16 bit)
 const int pinLsr = 4;      // Laser pin
 const int pinDeb = 13;     // Debugging pin (LED on the board)
 const int sensorLoc = 0;   // A0
-const int catchTh = 570;   // Threshold in CATCH command 200 = ~1V.
+const int catchTh = 100;   // Threshold in CATCH command 200 = ~1V.
 
 // Parameters
 const int stepDelay = 2; // 2 ms
@@ -33,11 +33,11 @@ const int EEloc_polOffset = 4;  // Takes 2 bytes
 
 int polSeq[seqLength] = {0}; // int datatype, in multiples of 45 degrees.
 
-const int seqStepTime = 1500;  // Time between each steps. Def: 1500 ms
+const int seqStepTime = 500;  // Time between each steps. Def: 1500 ms
 const int seqInitTarget = 1;   // Set initialization polarisation for seq always (D)
-const int seqPinStart = 1200;  // Time in sequence to start / ON the pin
-const int seqPinStop = 1400;   // Time in sequence to stop / OFF the pin
-const int seqReadTime = 1300;  // 1300 ms (hopefully in the middle of the laser pulse)
+const int seqPinStart = 50;  // Time in sequence to start / ON the pin
+const int seqPinStop = 450;   // Time in sequence to stop / OFF the pin
+const int seqReadTime = 250;  // 1300 ms (hopefully in the middle of the laser pulse)
 const int seqSyncBlink = 500;  // 200 ms (to initialise the signal)
 //int moveType;
 int moveStepper(int = 1);
@@ -136,8 +136,8 @@ void loop() {
       break;
       
     case 2: //ANG?
-      EEPROM_readAnything(EEloc_angleTarget, angleTarget);
-      Serial.println(angleTarget);
+      //EEPROM_readAnything(EEloc_angleTarget, angleTarget);
+      Serial.println(myMotor.readAngle());
       break;
       
     case 3: //SETPOL X
@@ -302,7 +302,7 @@ int moveStepper(int moveType) {
   int current;
   int target;
   // read current and target angles from Arduino's EEPROM memory
-  EEPROM_readAnything(EEloc_angleCurrent, current);
+  // EEPROM_readAnything(EEloc_angleCurrent, current);
   EEPROM_readAnything(EEloc_angleTarget, target);
   if (moveType==2) {
 //     Serial.println("Calling approachAngle");
@@ -315,7 +315,7 @@ int moveStepper(int moveType) {
     myMotor.gotoAngle(target);
   }
   // Current angle is now the target angle
-  EEPROM_writeAnything(EEloc_angleCurrent, target);
+  // EEPROM_writeAnything(EEloc_angleCurrent, target);
   // Serial.print("outside: ");
   // Serial.println(myMotor.readAngle());
   return 1;
@@ -413,7 +413,9 @@ int runSequence(int mode){
     angleTarget = polSeq[i] * 45 + polOffset;
     EEPROM_writeAnything(EEloc_angleTarget, angleTarget);
     // Serial.println("Moving to prescribed angle");
-    moveStepper();
+    moveStepper(2);
+
+    timeStep = millis();
     // Perform operation on the laser / sensor
     if (mode == 1){
       pinBlink(timeStep, pinLsr);  // Blinks on laser
@@ -430,7 +432,7 @@ int runSequence(int mode){
   // Go back to initialisation (def: D)
   angleTarget = seqInitTarget * 45 + polOffset;
   EEPROM_writeAnything(EEloc_angleTarget, angleTarget);
-  moveStepper();
+  moveStepper(2);
   
   // Sends the measurement values to serial (for mode == 2)
   if (mode == 2){

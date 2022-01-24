@@ -10,7 +10,8 @@ import time
 import numpy as np
 
 # Parameters
-sender_seq = '0000111122223333 '
+recv_seq = '0000111122223333 '
+#recv_seq = '0123012301230123 '
 
 # Obtain device location
 # devloc_file = 'devloc_quantum.txt'
@@ -23,7 +24,7 @@ sender_seq = '0000111122223333 '
 # Other parameters declarations
 baudrate = 115200    # Default in Arduino
 timeout = 0.1        # Serial timeout (in s).
-serial_addr = "COM12"
+serial_addr = "COM3"
 
 # Starts the program
 print("Polarisation Calibrator (Receiver)")
@@ -45,7 +46,7 @@ receiver.reset_output_buffer()
 print("Flushed")
 
 # Send the sequence
-seq = 'POLSEQ ' + sender_seq
+seq = 'POLSEQ ' + recv_seq
 print(('seq is:{}'.format(seq)))
 receiver.write(seq.encode())
 

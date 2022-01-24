@@ -151,8 +151,6 @@ class MyWindowClass(QMainWindow, form_class):
             self.update_offset(self.offset)
             self.update_angle(self.curr_angle)
             self.deviceRunning = not self.deviceRunning
-
-
         else:
             if self.laserOn:
                 self.toggle_laser()

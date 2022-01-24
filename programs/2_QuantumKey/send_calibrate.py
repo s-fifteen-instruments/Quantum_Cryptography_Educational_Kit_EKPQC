@@ -22,7 +22,7 @@ sender_seq = '0123012301230123 '
 # Other parameters declarations
 baudrate = 115200      # Default in Arduino
 timeout = 0.1        # Serial timeout (in s).
-serial_addr = "COM4" # Hard-coded for now.
+serial_addr = "COM5" # Hard-coded for now.
 
 # Starts the program
 print("Polarisation Calibrator (Sender)")
