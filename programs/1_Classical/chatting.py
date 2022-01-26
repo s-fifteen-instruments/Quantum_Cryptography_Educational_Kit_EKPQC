@@ -1,5 +1,3 @@
-#!/usr/bin/env python2
-
 '''
 Python wrapper program to receive a string through the IR channel with
 the NEC-string protocol.
@@ -19,7 +17,7 @@ with open(devloc_file) as f:
 serial_addr = content
 
 # Other parameters declarations
-baudrate = 9600      # Default in Arduino
+baudrate = 115200      # Default in Arduino
 rep_wait_time = 0.3  # Wait time between packets (in s).
 timeout = 0.1        # Serial timeout (in s).
 
@@ -47,22 +45,22 @@ while True:
             pass
         else:   # Send the message lor
             # Iterate and send the string
-            device.write('SEND ') # Flag to send
-            device.write(b'\x02\x02\x02\x02') # Start of text
+            device.write('SEND '.encode()) # Flag to send
+            device.write('\x02\x02\x02\x02'.encode()) # Start of text
             time.sleep(rep_wait_time)
             str_ptr = 0
             max_str = len(tosend_string)
             while True:
                 str_packet = tosend_string[str_ptr:str_ptr+4]
-                device.write('SEND ') # Flag to send
-                device.write(str_packet)
+                device.write('SEND '.encode()) # Flag to send
+                device.write(str_packet.encode())
                 sys.stdout.write("\r{0}    ".format("Sending: "+str_packet))
                 sys.stdout.flush()
                 str_ptr += 4
                 time.sleep(rep_wait_time)
                 if str_ptr >= max_str:
-                    device.write('SEND ') # Flag to send
-                    device.write(b'\x03\x03\x03\x03') # End of text
+                    device.write('SEND '.encode()) # Flag to send
+                    device.write('\x03\x03\x03\x03'.encode()) # End of text
                     time.sleep(rep_wait_time)
                     sys.stdout.write("\r{0}\n".format("Sending done!"))
                     sys.stdout.flush()
@@ -73,11 +71,11 @@ while True:
         print (msg_string)
         state = 0 # 0 : waiting for STX, 1 : transmitting/ wait for ETX
         device.reset_input_buffer() # Flush all the garbages
-        device.write('RECV ') # Flag to recv
+        device.write('RECV '.encode()) # Flag to recv
         while True:
             if device.in_waiting:
                 hex_string = device.read(8)
-                device.write('RECV ') # Flag to recv
+                device.write('RECV '.encode()) # Flag to recv
                 # Looking for start of text
                 if hex_string[:7] == '2020202':
                     print ("--- START OF TEXT ---")
@@ -86,7 +84,7 @@ while True:
                     try:
                         # Looking for end of text
                         if hex_string == '3030303':
-                            device.write('#') # Flag to end listening
+                            device.write('#'.encode()) # Flag to end listening
                             print ("\n--- END OF TEXT ---")
                             break
                         # Check and modify the length of string to 8 HEX char
@@ -100,6 +98,6 @@ while True:
                     except ValueError:
                         print("\n ERROR! UNABLE TO DECODE STRING!")
     except KeyboardInterrupt:
-        device.write('#') # Flag to force end listening
+        device.write('#'.encode()) # Flag to force end listening
         print ("\nThank you for using the program!")
         sys.exit()  # Exits the program

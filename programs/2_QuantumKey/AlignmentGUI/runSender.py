@@ -145,7 +145,7 @@ class MyWindowClass(QMainWindow, form_class):
             self.buttonStart.setText("Stop")
 
             #Initialising the motors
-            self.curr_angle = int(self.motor.get_angle())
+            self.curr_angle = float(self.motor.get_angle())
             self.offset  = int(self.motor.get_offset())
             print((self.offset))
             self.update_offset(self.offset)
@@ -194,7 +194,7 @@ class MyWindowClass(QMainWindow, form_class):
         #Change the absolute angle in GUI and here
         self.statusbar.showMessage("Updating Angle... Please Wait")
         self.curr_angle = angle_value
-        self.angleInput.setValue(angle_value)
+        self.angleInput.setValue(angle_value) # QDoubleSpinBox - See guiSnd.ui file
         self.motor.set_angle(angle_value)
         self.statusbar.showMessage("Updating Angle... Done")
 

@@ -1,5 +1,3 @@
-#!/usr/bin/env python2
-
 '''
 Python wrapper program to receive a string through the IR channel with
 the NEC-string protocol.
@@ -19,7 +17,7 @@ with open(devloc_file) as f:
 serial_addr = content
 
 # Other parameters declarations
-baudrate = 9600      # Default in Arduino
+baudrate = 115200      # Default in Arduino
 timeout = 0.1        # Serial timeout (in s).
 
 # Opens the sender side serial port
@@ -41,11 +39,11 @@ while True:
         print(msg_string)
         state = 0 # 0 : waiting for STX, 1 : transmitting/ wait for ETX
         receiver.reset_input_buffer() # Flush all the garbages
-        receiver.write('RECV ') # Flag to recv
+        receiver.write('RECV '.encode()) # Flag to recv
         while True:
             if receiver.in_waiting:
                 hex_string = receiver.read(8)
-                receiver.write('RECV ') # Flag to recv
+                receiver.write('RECV '.encode()) # Flag to recv
                 # Looking for start of text
                 if hex_string == '2020202':
                     print ("--- START OF TEXT ---")
@@ -54,7 +52,7 @@ while True:
                     try:
                         # Looking for end of text
                         if hex_string == '3030303':
-                            receiver.write('#') # Flag to end listening
+                            receiver.write('#'.encode()) # Flag to end listening
                             print ("\n--- END OF TEXT ---")
                             break
                         # Check and modify the length of string to 8 HEX char

@@ -10,7 +10,9 @@
 */
 
 #include <IRremote.h>
+// #include "PinDefinitionsAndMore.h"
 
+#define SEND_PWM_BY_TIMER
 // Parameters
 const int serial_timeout = 100; // 100 ms 
 const int send_pin = 3;  // The library sets it to 3 (fixed).
@@ -19,7 +21,7 @@ unsigned int carrier_freq = 38; // 38 kHz
 const int irrecv_timeout = 100; // 100 ms 
 
 // More useless parameters
-int blink_time = 200;     // 200 ms
+int blink_time = 1000;     // 200 ms
 int blink_num = 20;       // 20 blinks
 int blink_obtime = 10000; // 10 seconds
 int blink_rstime = 200;   // 200 ms timeout 
@@ -31,15 +33,15 @@ decode_results results;
 
 void setup() {
   // initialize the serial port:
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.setTimeout(serial_timeout);
 }
 
 void loop() {
   // Select the best response
   while (!Serial.available()); // Listen to serial input
-  char serbuf[8] = ""; // Reinitialise buffer (8 bytes)
-  Serial.readBytesUntil(' ', serbuf, 8); // Until whitespace
+  char serbuf[16] = ""; // Reinitialise buffer (16 bytes, char array size 16)
+  Serial.readBytesUntil(' ', serbuf, 15); // Until whitespace
   // Obtain which input command (enumerated)
   int enumc = -1; // default choice
   int maxChoice = 5;
@@ -72,10 +74,10 @@ void loop() {
       for (int i=0; i<blink_num; i++){
         irsend.enableIROut(carrier_freq);
         // bright
-        TIMER_ENABLE_PWM;
+        // TIMER_ENABLE_PWM;
         delay(blink_time);
         // dark
-        TIMER_DISABLE_PWM;
+        // TIMER_DISABLE_PWM;
         delay(blink_time);    
       }
       Serial.println("Task done.");
@@ -136,4 +138,3 @@ void loop() {
       break;
   }
 }
-

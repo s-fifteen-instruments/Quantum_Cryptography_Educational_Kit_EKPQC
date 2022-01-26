@@ -22,7 +22,7 @@ decode_results results;
 
 void setup(){
   // Open up the serial communication
-  Serial.begin(9600);
+  Serial.begin(115200);
   // Set the recv_pin to INPUT
   irrecv.enableIRIn();
 }

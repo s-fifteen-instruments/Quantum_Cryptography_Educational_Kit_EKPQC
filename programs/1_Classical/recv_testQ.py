@@ -1,5 +1,3 @@
-#!/usr/bin/env python2
-
 '''
 Python wrapper program to receive a string through the IR channel with
 the NEC-string protocol.
@@ -20,10 +18,10 @@ with open(devloc_file) as f:
     content = f.readlines()[0]
     if content[-1] == '\n':  # Remove an extra \n
         content = content[:-1]
-serial_addr = content
+serial_addr = 'COM3'
 
 # Other parameters declarations
-baudrate = 9600      # Default in Arduino
+baudrate = 115200      # Default in Arduino
 timeout = 0.1        # Serial timeout (in s).
 
 # Opens the sender side serial port
@@ -41,7 +39,7 @@ while True:
         print("Waiting for any incoming messages...")
         print("To exit the program, use Ctrl+C\n")
         receiver.reset_input_buffer() # Flush all the garbages
-        receiver.write('RECV ') # Flag to recv
+        receiver.write('RECV '.encode()) # Flag to recv
         while True:
             if receiver.in_waiting:
                 hex_string = receiver.read(8)
@@ -61,10 +59,10 @@ while True:
                         print("To exit the program, use Ctrl+C\n")
                     # Trying to receive again
                     receiver.reset_input_buffer() # Flush all the garbages
-                    receiver.write('RECV ') # Flag to recv
+                    receiver.write('RECV '.encode()) # Flag to recv
                 except ValueError:
                     print("\n ERROR! UNABLE TO DECODE STRING!")
     except KeyboardInterrupt:
-        receiver.write('#') # Flag to force end listening
+        receiver.write('#'.encode()) # Flag to force end listening
         print ("\nThank you for using the program!")
         sys.exit()  # Exits the program

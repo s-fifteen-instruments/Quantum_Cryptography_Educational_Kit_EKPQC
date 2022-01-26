@@ -13,7 +13,7 @@
 
 // Important parameters
 const int seqLength = 16;  // Polarisation sequence length (16 bit)
-const int pinLsr = 4;      // Laser pin
+const int pinLsr = 12;      // Laser pin
 const int pinDeb = 13;     // Debugging pin (LED on the board)
 const int sensorLoc = 0;   // A0
 const int catchTh = 100;   // Threshold in CATCH command 200 = ~1V.
@@ -69,7 +69,7 @@ void setup() {
 
 void loop() {
   while (!Serial.available()); // Listen to serial input
-  char serbuf[8] = ""; // Reinitialise buffer (8 bytes)
+  char serbuf[16] = ""; // Reinitialise buffer (16 bytes, char array size 16)
   Serial.readBytesUntil(' ', serbuf, 15); // Until whitespace
   // Serial.print("serbuf is:"); // Debug
   // Serial.println(serbuf); // Debug
@@ -120,7 +120,7 @@ void loop() {
       Serial.print("CATCH      Wait for laser light and display time\n");
       Serial.print("RUNSEQ     Run the sequence (generic)\n");
       Serial.print("TXSEQ      Run the sequence (as a sender)\n");
-      Serial.print("RXSEQ      Run the sequence (as a receiver)\n");      
+      Serial.print("RXSEQ      Run the sequence (as a receiver)\n");     
       break; 
       
     case 1: //SETANG X

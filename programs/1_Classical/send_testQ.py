@@ -1,5 +1,3 @@
-#!/usr/bin/env python2
-
 '''
 Python wrapper program to send a string through the IR channel with
 the NEC-string protocol.
@@ -20,10 +18,10 @@ with open(devloc_file) as f:
     content = f.readlines()[0]
     if content[-1] == '\n':  # Remove an extra \n
         content = content[:-1]
-serial_addr = content
+serial_addr = 'COM5'
 
 # Other parameters declarations
-baudrate = 9600      # Default in Arduino
+baudrate = 115200      # Default in Arduino
 rep_wait_time = 1    # 1 s wait time between each tries
 timeout = 0.1        # Serial timeout (in s).
 
@@ -42,8 +40,8 @@ while True:
     try:
         print("Trying to send the text:", text)
         print("To exit the program, use Ctrl+C\n")
-        sender.write('SEND ') # Flag to send
-        sender.write(text)    # Sending the text
+        sender.write('SEND '.encode()) # Flag to send
+        sender.write(text.encode())    # Sending the text
         time.sleep(rep_wait_time)
 
     except KeyboardInterrupt:

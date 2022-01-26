@@ -782,7 +782,7 @@
      <number>3</number>
     </property>
    </widget>
-   <widget class="QSpinBox" name="angleInput">
+   <widget class="QDoubleSpinBox" name="angleInput">
     <property name="geometry">
      <rect>
       <x>135</x>
@@ -790,12 +790,6 @@
       <width>71</width>
       <height>27</height>
      </rect>
-    </property>
-    <property name="minimum">
-     <number>-719</number>
-    </property>
-    <property name="maximum">
-     <number>719</number>
     </property>
    </widget>
    <widget class="QSpinBox" name="offsetInput">
@@ -1053,7 +1047,7 @@
      <x>0</x>
      <y>0</y>
      <width>506</width>
-     <height>30</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
