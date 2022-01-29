@@ -81,7 +81,7 @@ void loop() {
       for (int i=0; i<blink_num; i++){
         IrSender.enableIROut(carrier_freq);
         // bright
-        analogWrite(send_pin, 127); // output pin/duty cycle
+        analogWrite(send_pin, 127);
         delay(blink_time);
         // dark
         analogWrite(send_pin, 0);

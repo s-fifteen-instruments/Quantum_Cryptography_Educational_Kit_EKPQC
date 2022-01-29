@@ -17,7 +17,7 @@ def tohex(val, nbits):
 # Obtain device location
 devloc_file = '../devloc_quantum.txt'
 with open(devloc_file) as f:
-    content = f.readlines()[0]
+    content = f.readlines().decode()[0]
     if content[-1] == '\n':  # Remove an extra \n
         content = content[:-1]
 serial_addr = content
@@ -41,23 +41,23 @@ print("Alice, Are you ready? This is the key sender program.")
 print("Randomising key bits and basis bits using Arduino")
 
 # Randomising the sequence
-sender.write('RNDSEQ ')
+sender.write('RNDSEQ '.encode())
 
 # Block until receive reply
 while True:
     if sender.in_waiting:
-        print(sender.readlines()[0]) # Should display OK
+        print(sender.readlines().decode()[0]) # Should display OK
         break
 
 print("Arduino says he/she likes to choose the following bits:")
 
 # Find out what is the key
-sender.write('SEQ? ')
+sender.write('SEQ? '.encode())
 
 # Block until receive 1st reply
 while True:
     if sender.in_waiting:
-        reply_str = sender.readlines()[0][:-1] # Remove the /n
+        reply_str = sender.readlines().decode()[0][:-1] # Remove the /n
         break
 
 # Obtain the binary string repr for val and bas bits
@@ -75,12 +75,12 @@ print("Basis bits (in hex):", bas_hex[2:].zfill(4))
 
 # Run the sequence
 print("\nRunning the sequence...")
-sender.write('TXSEQ ')
+sender.write('TXSEQ '.encode())
 
 # Block until receive reply
 while True:
     if sender.in_waiting:
-        print(sender.readlines()[0]) # Should display OK
+        print(sender.readlines().decode()[0]) # Should display OK
         break
 
 # Print last statement and exits the program

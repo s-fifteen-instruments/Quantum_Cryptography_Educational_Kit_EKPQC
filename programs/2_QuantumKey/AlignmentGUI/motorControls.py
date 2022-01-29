@@ -32,7 +32,8 @@ class MotorControl(object):
 
 	def get_voltage(self):
 		self.serial.write('VOLT? '.encode())
-		voltage = self.readline_fix() # Remove /n
+		voltage_bit = float(self.readline_fix()) # Remove /n, change str to float
+		voltage = voltage_bit/1024*5 # Convert from bit range to voltage (0-1023 --> 0-5V)
 		return voltage
 
 	def set_angle(self,angle):
@@ -59,6 +60,18 @@ class MotorControl(object):
 		self.serial.write('HOF? '.encode())
 		angle = self.readline_fix()
 		return angle
+
+	def set_threshold(self,threshold):
+		#Sets the detector threshold from 0-1023. 200 is approx. 1V
+		writeStr = 'SETCATCHTH ' + str(threshold) + ' '
+		self.serial.write(writeStr.encode())
+		self.readline_fix()
+
+	def get_threshold(self):
+		#Gets the detector threshold from 0-1023. 200 is approx. 1V
+		self.serial.write('CATCHTH? '.encode())
+		threshold = self.readline_fix()
+		return threshold
 
 	def power_on(self):
 		#Powers on laser

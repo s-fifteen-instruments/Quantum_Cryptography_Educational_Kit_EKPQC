@@ -16,7 +16,7 @@ const int seqLength = 16;  // Polarisation sequence length (16 bit)
 const int pinLsr = 12;      // Laser pin
 const int pinDeb = 13;     // Debugging pin (LED on the board)
 const int sensorLoc = 0;   // A0
-const int catchTh = 100;   // Threshold in CATCH command 200 = ~1V.
+const int catchTh = 400;   // Threshold in CATCH command 200 = ~1V.
 
 // Parameters
 const int stepDelay = 2; // 2 ms
@@ -75,12 +75,12 @@ void loop() {
   // Serial.println(serbuf); // Debug
   // Obtain which input command (enumerated)
   int enumc = -1; // default choice
-  int maxChoice = 18;
+  int maxChoice = 20;
   char sercmd[maxChoice][8] = {"HELP",             // 0
     "SETANG", "ANG?", "SETPOL", "POL?", "SETHOF",  // 5
     "HOF?", "POLSEQ", "RNDSEQ", "RNDBAS", "SEQ?",  // 10
     "LASON", "LASOFF", "VOLT?", "CATCH", "RUNSEQ", // 15
-    "TXSEQ", "RXSEQ"};                             // 17
+    "TXSEQ", "RXSEQ", "CATCH?", "STCATCH"};   // 19
   for (int c=0; c<maxChoice; c++){
     if (strcasecmp(sercmd[c],serbuf) == 0){ 
       enumc = c;// Obtain match
@@ -102,25 +102,27 @@ void loop() {
   switch(enumc){
     
     case 0: //HELP
-      Serial.print("Quantum Key Construction (Mission 2)\n");
-      Serial.print("HELP       Print help statement\n");
-      Serial.print("SETANG X   Set angle to X (in degrees)\n");
-      Serial.print("ANG?       Ask for current angle\n");
-      Serial.print("SETPOL X   Set polarisation to X -> 0(H), 1(D), 2(V), 3(A)\n");
-      Serial.print("POL?       Ask for current polarisation\n");
-      Serial.print("SETHOF X   Set angle offset for H polarisation\n");
-      Serial.print("HOF?       Ask for the angle offset for H polarisation\n");
-      Serial.print("POLSEQ X.. Set polarisation sequence as X..\n");
-      Serial.print("RNDSEQ     Set random polarisation sequence\n");
-      Serial.print("RNDBAS     Set random polarisation basis\n");
-      Serial.print("SEQ?       Ask for sequence\n");
-      Serial.print("LASON      Turn on laser\n");
-      Serial.print("LASOFF     Turn off laser\n");
-      Serial.print("VOLT?      Ask for sensor voltage\n");
-      Serial.print("CATCH      Wait for laser light and display time\n");
-      Serial.print("RUNSEQ     Run the sequence (generic)\n");
-      Serial.print("TXSEQ      Run the sequence (as a sender)\n");
-      Serial.print("RXSEQ      Run the sequence (as a receiver)\n");     
+      Serial.print("Quantum Key Construction\n");
+      Serial.print("HELP          Print help statement\n");
+      Serial.print("SETANG X      Set angle to X (in degrees)\n");
+      Serial.print("ANG?          Ask for current angle\n");
+      Serial.print("SETPOL X      Set polarisation to X -> 0(H), 1(D), 2(V), 3(A)\n");
+      Serial.print("POL?          Ask for current polarisation\n");
+      Serial.print("SETHOF X      Set angle offset for H polarisation\n");
+      Serial.print("HOF?          Ask for the angle offset for H polarisation\n");
+      Serial.print("POLSEQ X..    Set polarisation sequence as X..\n");
+      Serial.print("RNDSEQ        Set random polarisation sequence\n");
+      Serial.print("RNDBAS        Set random polarisation basis\n");
+      Serial.print("SEQ?          Ask for sequence\n");
+      Serial.print("LASON         Turn on laser\n");
+      Serial.print("LASOFF        Turn off laser\n");
+      Serial.print("VOLT?         Ask for sensor voltage\n");
+      Serial.print("CATCH         Wait for laser light and display time\n");
+      Serial.print("RUNSEQ        Run the sequence (generic)\n");
+      Serial.print("TXSEQ         Run the sequence (as a sender)\n");
+      Serial.print("RXSEQ         Run the sequence (as a receiver)\n");
+      Serial.print("CATCHTH?      Ask for high laser detection threshold - 200~1V\n");
+      Serial.print("SETCATCHTH X  Set laser detection threshold (0-1023) - 200~1V\n");      
       break; 
       
     case 1: //SETANG X
@@ -246,6 +248,15 @@ void loop() {
       // In mode 2, it will print the sensor values
       break;
 
+//    case 18: //CATCHTH?
+//      Serial.println(catchTh);
+//
+//    case 19: //SETCATCHTH
+//      while (!Serial.available());
+//      Serial.readBytesUntil(' ', valbuf, 15);
+//      catchTh = atoi(valbuf);
+//      Serial.println("OK");
+     
     default:
       Serial.println("Unknown command");
       break;

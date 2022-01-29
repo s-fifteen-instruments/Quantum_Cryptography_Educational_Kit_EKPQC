@@ -15,14 +15,14 @@ def tohex(val, nbits):
 # Obtain device location
 devloc_file = '../devloc_quantum.txt'
 with open(devloc_file) as f:
-    content = f.readlines()[0]
+    content = f.readlines().decode()[0]
     if content[-1] == '\n':  # Remove an extra \n
         content = content[:-1]
 
 # Obtain threshold
 threshold_file = '../threshold.txt'
 with open(threshold_file) as f:
-    content = f.readlines()[0]
+    content = f.readlines().decode()[0]
     if content[-1] == '\n':  # Remove an extra \n
         content = content[:-1]
 threshold = float(content) # Get the float value
@@ -30,7 +30,7 @@ threshold = float(content) # Get the float value
 # Other parameters declarations
 baudrate = 9600      # Default in Arduino
 timeout = 0.1        # Serial timeout (in s).
-serial_addr = "COM12" # Hard-coded for now
+serial_addr = "COM7" # Hard-coded for now
 
 # Opens the receiver side serial port
 receiver = serial.Serial(serial_addr, baudrate, timeout=timeout)
@@ -47,23 +47,23 @@ print("Bob, Are you ready? This is the key receiver program.")
 print("Randomising basis bits using Arduino")
 
 # Randomising the sequence
-receiver.write('RNDBAS ')
+receiver.write('RNDBAS '.encode())
 
 # Block until receive reply
 while True:
     if receiver.in_waiting:
-        print((receiver.readlines()[0])) # Should display OK
+        print((receiver.readlines().decode()[0])) # Should display OK
         break
 
 print("Arduino says he/she likes to choose the following bits:")
 
 # Find out what is the key
-receiver.write('SEQ? ')
+receiver.write('SEQ? '.encode())
 
 # Block until receive 1st reply
 while True:
     if receiver.in_waiting:
-        bas_str = receiver.readlines()[0][:-1] # Remove the /n
+        bas_str = receiver.readlines().decode()[0][:-1] # Remove the /n
         break
 
 # Giving the reply in HEX format
@@ -72,12 +72,12 @@ print(("Basis bits (in hex):", bas_hex[2:].zfill(4)))
 
 # Run the sequence
 print("\nRunning the sequence and performing measurement...")
-receiver.write('RXSEQ ')
+receiver.write('RXSEQ '.encode())
 
 # Block until receive reply
 while True:
     if receiver.in_waiting:
-        meas_str = receiver.readlines()[0][:-1] # Remove the /n
+        meas_str = receiver.readlines().decode()[0][:-1] # Remove the /n
         break
 
 # Obtain the measured bits

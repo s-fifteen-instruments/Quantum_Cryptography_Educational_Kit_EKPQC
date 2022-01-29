@@ -14,7 +14,7 @@ with open(devloc_file) as f:
     content = f.readlines()[0]
     if content[-1] == '\n':  # Remove an extra \n
         content = content[:-1]
-serial_addr = content
+serial_addr = 'COM7'
 
 # Other parameters declarations
 baudrate = 115200      # Default in Arduino
