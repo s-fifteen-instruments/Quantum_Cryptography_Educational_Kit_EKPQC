@@ -10,7 +10,7 @@
  */
  
 // requires servo library (for the control signal) 
-#include <Servo.h>
+//#include <Servo.h>
  
 // include guard
 #ifndef PolarizerMotor_h
@@ -43,7 +43,7 @@ class PolarizerMotor {
     
     
   private:
-    Servo controlSignal;
+    //Servo controlSignal;
   
     int controlPin;     
     int feedbackPin;  

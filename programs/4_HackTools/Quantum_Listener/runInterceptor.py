@@ -15,7 +15,8 @@ import glob
 import string
 import matplotlib.pyplot as plt
 
-from PyQt5 import QtGui, uic
+from PyQt5 import uic
+from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtCore import QTimer
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import normalize
@@ -203,12 +204,12 @@ def insanity_check(number, min_value, max_value):
 	else:
 		return number
 
-class MyWindowClass(QtGui.QMainWindow, form_class):
+class MyWindowClass(QMainWindow, form_class):
 
 	def __init__(self, parent=None):
 
 		# Declaring GUI window
-		QtGui.QMainWindow.__init__(self, parent)
+		QMainWindow.__init__(self, parent)
 		self.setupUi(self)
 		# self.initialiseParameters()
 
@@ -413,7 +414,7 @@ class MyWindowClass(QtGui.QMainWindow, form_class):
 		self.masked_signal_hex.setText('{}'.format(tohex(int(self.maskedKey[:32],2),len(matchbs_bin))))
 
 if __name__ == '__main__':
-	app = QtGui.QApplication(sys.argv)
+	app = QApplication(sys.argv)
 	myWindow = MyWindowClass(None)
 	myWindow.show()
 	sys.exit(app.exec_())

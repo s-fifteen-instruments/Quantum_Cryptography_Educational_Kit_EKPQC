@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 '''
 Python wrapper program to log the measurement result for Eve
@@ -23,7 +23,7 @@ print("To exit the program, use Ctrl+C \n")
 # Other parameters declarations
 
 # Serial 1
-baudrate1 = 9600      # Default in Arduino
+baudrate1 = 115200      # Default in Arduino
 timeout1 = 0.1        # Serial timeout (in s).
 refresh_rate= 0.0     # Minimum offset around 115 ms
 
@@ -32,7 +32,7 @@ baudrate2 = 115200    # Default in Arduino
 timeout2 = 0          # Serial timeout (in s).
 # Some note (may be a bug in the future):
 # The pyserial somehow does not properly respond to powermeter timeout
-# I will just assume it to have 0 timeout, and let the blocking donw
+# I will just assume it to have 0 timeout, and let the blocking done
 # by the other device's response time.
 
 # Opens the receiver side serial port
@@ -69,4 +69,4 @@ while True:
         time.sleep(refresh_rate)
     except KeyboardInterrupt:
         print ("\nThank you for using the program!")
-        sys.exit()  # Exits the program
+        sys.exit()  # Exits the program 

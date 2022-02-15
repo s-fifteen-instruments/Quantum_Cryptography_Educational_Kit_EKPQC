@@ -109,6 +109,7 @@ void PolarizerMotor::gotoAngle(int targetAngle, int wrap)
     // Wait until next cycle
     delay(this->controlPWMperiod);
   }
+  this->controlSignal.writeMicroseconds(0);
 }
 
 float PolarizerMotor::gotoAngleAndChop(int targetAngle, int wrap, int checkAgain)
@@ -143,7 +144,7 @@ float PolarizerMotor::gotoAngleAndChop(int targetAngle, int wrap, int checkAgain
       break;
     }
   }
-  
+  this->controlSignal.writeMicroseconds(0);
   return readAngle();
 }
 
@@ -184,6 +185,7 @@ float PolarizerMotor::approachAngle(int targetAngle, int wrap, int steps)
   }
   
   setSpeed(0);
+  this->controlSignal.writeMicroseconds(0);
   currentAngle = readAngle();
   return currentAngle;
 }

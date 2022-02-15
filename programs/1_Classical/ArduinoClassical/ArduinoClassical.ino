@@ -69,7 +69,7 @@ void loop() {
   // Switching between different cases
   switch(enumc){
     case 0: //HELP
-      Serial.print("Classical Communication Implementation (Mission 1)\n");
+      Serial.print("Classical Communications Channel\n");
       Serial.print("HELP       Print help statement\n");
       Serial.print("SBLINK     Send blinking feature\n");
       Serial.print("RBLINK     Recv blinking feature\n");

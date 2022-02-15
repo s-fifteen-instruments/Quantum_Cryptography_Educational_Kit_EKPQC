@@ -94,8 +94,24 @@ class MyWindowClass(QMainWindow, form_class):
         self.setOffset.clicked.connect(self.set_offset_gui)
         self.toggle.clicked.connect(self.toggle_laser)
 
-        # Gets a list of avaliable serial ports to connect  and adds to combo box
+        # Gets a list of avaliable serial ports to connect and adds to combo box
         self.ports = serial_ports()
+        for index, port in enumerate(self.ports):
+            try:
+                # Adds Classical/Quantum identifier based on HELP text
+                dev = serial.Serial(port, baudrate=115200, timeout=0.1)
+                time.sleep(2)
+                dev.reset_input_buffer()
+                dev.reset_output_buffer()
+                dev.write("help ".encode())
+                while True:
+                    if dev.in_waiting:
+                        response = dev.readlines()[0].decode().strip().split()[0]
+                        self.ports[index] += " (" + response + ")"
+                        break
+                dev.close()
+            except:
+                pass
         self.deviceBox.addItems(self.ports)
 
         """
@@ -136,7 +152,7 @@ class MyWindowClass(QMainWindow, form_class):
         if not self.deviceRunning:
 
           # Start device
-            self.motor = mc.MotorControl(str(self.deviceBox.currentText()))
+            self.motor = mc.MotorControl(str(self.deviceBox.currentText().split()[0]))
             # Initialising parameter and starting stuffs
             self.motor.power_off()
             self.statusbar.showMessage("Device Running")
