@@ -200,13 +200,14 @@ class MyWindowClass(QMainWindow, form_class):
 			self.statusbar.showMessage("Scanning... Please Wait")
 			while(read_count != (number_of_points+1)):
 				try:
-					self.voltage_A0 = float(self.motor.get_voltage())
-					power_str = str(self.voltage_A0)
 					#Update angle on GUI
 					self.update_angle(self.xdata[read_count])
+					self.voltage_A0 = float(self.motor.get_voltage())
+					power_str = str(self.voltage_A0)
 					#self.labelPower.setText(power_str + " V")
 					self.ydata[read_count] = self.voltage_A0
 					read_count += 1
+					print(self.xdata[read_count], power_str)
 				except:
 					# Sometime the serial channel needs to clear some junks
 					pass

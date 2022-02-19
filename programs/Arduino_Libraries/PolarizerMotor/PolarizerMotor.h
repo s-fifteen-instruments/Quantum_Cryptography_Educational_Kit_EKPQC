@@ -10,7 +10,7 @@
  */
  
 // requires servo library (for the control signal) 
-//#include <Servo.h>
+// #include <Servo.h>
  
 // include guard
 #ifndef PolarizerMotor_h
@@ -43,18 +43,18 @@ class PolarizerMotor {
     
     
   private:
-    //Servo controlSignal;
+    // Servo controlSignal;
   
     int controlPin;     
     int feedbackPin;  
     
     int anglePrecision; // target angular precision for the motor - default set to 5.
-    float currentAngle; // current angle of the motor
+    // float currentAngle; // current angle of the motor - removed, never called anywhere.
     int motorSpeed;     // set speed of the motor
     
     // Actuator-specific variables (for Parallax Feedback 360° High-Speed Servo)
     int controlPWMperiod = 20 ;     // delay in ms, before sending another control pulse
-    int controlPulseOffset = 1500; // pulse length in us to stop the motor (offset pulse)
+    int controlPulseOffset = 1485; // pulse length in us to stop the motor (offset pulse)
     int controlMaxSpeed = 220;     // max speed for the motor
     
     int feedbackMinPeriod = 1000;  // min period of the feedback pwm, in us
@@ -62,7 +62,7 @@ class PolarizerMotor {
     float feedbackMinDC = 0.029;   // min duty cycle of the feedback pwm (0 deg)
     float feedbackMaxDC = 0.971;   // max duty cycle of the feedback pwm (360 deg)
      
-    int cLoopSpeedOffset = 30;     // speed offset for the control loop  
+    int cLoopSpeedOffset = 35;     // speed offset for the control loop  
     int rotationPolarity = -1;     // polarity of rotation, either -1 or +1
 };
 

@@ -10,7 +10,7 @@
  */
  
 #include "Arduino.h"
-#include <Servo.h>
+//#include <Servo.h>
 #include "PolarizerMotor.h"
 
 // constructor
@@ -25,9 +25,10 @@ PolarizerMotor::PolarizerMotor(int controlPin, int feedbackPin, int anglePrecisi
 void PolarizerMotor::initialize()
 {
   // Attach the control signal
-  controlSignal.attach(controlPin);
+  // controlSignal.attach(controlPin);
   // Read the initial angle
-  this->currentAngle = readAngle();  
+  // this->currentAngle = readAngle();  
+  pinMode(this->controlPin, OUTPUT);
 }
 
 // method to read the current angle. Note: each call uses noInterrupt routine for ~2 ms.
@@ -57,7 +58,7 @@ float PolarizerMotor::readAngle()
   if (angle > 360) angle = 360;
   
   // Update the currentAngle
-  this->currentAngle = angle;
+  // this->currentAngle = angle;
     
   return angle;
 }
@@ -74,7 +75,10 @@ void PolarizerMotor::setSpeed(int speed)
   }
   
   int pulseLength = this->controlPulseOffset + this->rotationPolarity * this->motorSpeed; 
-  this->controlSignal.writeMicroseconds(pulseLength); // set the motor in motion
+  //this->controlSignal.writeMicroseconds(pulseLength); // set the motor in motion
+  digitalWrite(this->controlPin, HIGH);
+  delayMicroseconds(pulseLength); // set the motor in motion
+  digitalWrite(this->controlPin, LOW);
 }
 
 void PolarizerMotor::gotoAngle(int targetAngle, int wrap)
@@ -109,7 +113,7 @@ void PolarizerMotor::gotoAngle(int targetAngle, int wrap)
     // Wait until next cycle
     delay(this->controlPWMperiod);
   }
-  this->controlSignal.writeMicroseconds(0);
+
 }
 
 float PolarizerMotor::gotoAngleAndChop(int targetAngle, int wrap, int checkAgain)
@@ -144,7 +148,7 @@ float PolarizerMotor::gotoAngleAndChop(int targetAngle, int wrap, int checkAgain
       break;
     }
   }
-  this->controlSignal.writeMicroseconds(0);
+
   return readAngle();
 }
 
@@ -185,7 +189,7 @@ float PolarizerMotor::approachAngle(int targetAngle, int wrap, int steps)
   }
   
   setSpeed(0);
-  this->controlSignal.writeMicroseconds(0);
+
   currentAngle = readAngle();
   return currentAngle;
 }
