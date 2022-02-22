@@ -20,7 +20,7 @@ sender_seq = '0123012301230123 '
 # serial_addr = content
 
 # Other parameters declarations
-baudrate = 115200      # Default in Arduino
+baudrate = 38400      # Default in Arduino
 timeout = 0.1        # Serial timeout (in s).
 serial_addr = "COM6" # Hard-coded for now.
 

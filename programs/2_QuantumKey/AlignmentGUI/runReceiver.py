@@ -88,6 +88,7 @@ class MyWindowClass(QMainWindow, form_class):
 		autoOffset : autoOffset
 		goToPol : go to polarisation
 		goToAngle : go to relative angle
+		setThButton: set detector threshold to detect incoming laser light
 		"""
 		self.buttonStart.clicked.connect(self.buttonStart_clicked)
 		self.resetButton.clicked.connect(self.reset_params)
@@ -96,6 +97,7 @@ class MyWindowClass(QMainWindow, form_class):
 		self.goToAngle.clicked.connect(self.set_angle_gui)
 		self.startScan.clicked.connect(self.start_scan)
 		self.setOffset.clicked.connect(self.set_offset_gui)
+		self.setThButton.clicked.connect(self.set_threshold_gui)
 
 
 		# Gets a list of avaliable serial ports to connect to and adds to combo box
@@ -103,7 +105,7 @@ class MyWindowClass(QMainWindow, form_class):
 		for index, port in enumerate(self.ports):
 			try:
 				# Adds Classical/Quantum identifier based on HELP text
-				dev = serial.Serial(port, baudrate=115200, timeout=0.1)
+				dev = serial.Serial(port, baudrate=38400, timeout=0.1)
 				time.sleep(2)
 				dev.reset_input_buffer()
 				dev.reset_output_buffer()
@@ -167,8 +169,8 @@ class MyWindowClass(QMainWindow, form_class):
 			#Initialising the motors
 			self.curr_angle = float(self.motor.get_angle())
 			self.offset  = int(self.motor.get_offset())
-			#self.threshold = int(self.motor.get_threshold())
-			#self.update_threshold(self.threshold())
+			self.threshold = int(self.motor.get_threshold())
+			self.update_threshold(self.threshold())
 			self.update_offset(self.offset)
 			self.update_angle(self.curr_angle)
 			self.deviceRunning = not self.deviceRunning
@@ -246,9 +248,9 @@ class MyWindowClass(QMainWindow, form_class):
 		self.statusbar.showMessage("Updating Angle... Done")
 		return None
 
-	def set_threshold(self):
+	def set_threshold_gui(self):
 		#Set detector threshold
-		threshold = self.catchThInput.value()
+		threshold = self.thInput.value()
 		self.update_threshold(threshold)
 		return None
 
@@ -256,7 +258,7 @@ class MyWindowClass(QMainWindow, form_class):
 		#Change the threshold in GUI and here
 		self.statusbar.showMessage("Updating Threshold... Please Wait")
 		self.threshold = threshold #Internal variable
-		self.catchThInput.setValue(threshold) #GUI Display
+		self.thInput.setValue(threshold) #GUI Display
 		self.motor.set_threshold(threshold) #Arduino
 		self.statusbar.showMessage("Updating Threshold... Done")
 		return None

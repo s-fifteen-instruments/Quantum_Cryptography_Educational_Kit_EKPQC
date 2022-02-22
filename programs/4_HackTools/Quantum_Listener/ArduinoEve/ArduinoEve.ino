@@ -56,7 +56,7 @@ void setup() {
   myMotor.initialize();
   // myMotor.setSpeed(stepSpeed);
   // initialize the serial port:
-  Serial.begin(115200);
+  Serial.begin(38400);
   Serial.setTimeout(serialTimeout);
   // Obtain the polarisation offset from EEProm
   EEPROM_readAnything(EEloc_polOffset, polOffset);

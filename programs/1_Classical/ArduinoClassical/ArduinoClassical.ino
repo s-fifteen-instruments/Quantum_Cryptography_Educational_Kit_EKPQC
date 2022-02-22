@@ -38,7 +38,7 @@ uint32_t reverseBits( uint32_t val )
 
 void setup() {
   // initialize the serial port:
-  Serial.begin(115200);
+  Serial.begin(38400);
   Serial.setTimeout(serial_timeout);
   IrSender.begin(send_pin, DISABLE_LED_FEEDBACK);
   IrReceiver.begin(recv_pin);

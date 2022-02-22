@@ -74,7 +74,7 @@ void gotoMotorAngle(float targetAngle){
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(115200); // For debugging, with higher speed
+  Serial.begin(38400); // For debugging, with higher speed
   motor.attach(pinMotorControl);
   motor.writeMicroseconds(1600);
   setMotorSpeed(50);

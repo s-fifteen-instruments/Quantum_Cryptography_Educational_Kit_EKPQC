@@ -23,12 +23,12 @@ print("To exit the program, use Ctrl+C \n")
 # Other parameters declarations
 
 # Serial 1
-baudrate1 = 115200      # Default in Arduino
+baudrate1 = 38400      # Default in Arduino
 timeout1 = 0.1        # Serial timeout (in s).
 refresh_rate= 0.0     # Minimum offset around 115 ms
 
 # Serial 2
-baudrate2 = 115200    # Default in Arduino
+baudrate2 = 38400    # Default in Arduino
 timeout2 = 0          # Serial timeout (in s).
 # Some note (may be a bug in the future):
 # The pyserial somehow does not properly respond to powermeter timeout

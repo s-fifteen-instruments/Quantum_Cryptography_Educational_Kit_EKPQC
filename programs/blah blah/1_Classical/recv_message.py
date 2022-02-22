@@ -17,7 +17,7 @@ with open(devloc_file) as f:
 serial_addr = content
 
 # Other parameters declarations
-baudrate = 115200      # Default in Arduino
+baudrate = 38400      # Default in Arduino
 timeout = 0.1        # Serial timeout (in s).
 
 # Opens the sender side serial port

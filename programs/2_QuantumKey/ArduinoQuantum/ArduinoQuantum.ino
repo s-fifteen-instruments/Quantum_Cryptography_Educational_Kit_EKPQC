@@ -56,7 +56,7 @@ void setup() {
   myMotor.initialize();
   // myMotor.setSpeed(stepSpeed);
   // initialize the serial port:
-  Serial.begin(115200);
+  Serial.begin(38400);
   Serial.setTimeout(serialTimeout);
   // Obtain the polarisation offset from EEProm
   EEPROM_readAnything(EEloc_polOffset, polOffset);
@@ -249,16 +249,16 @@ void loop() {
       Serial.println(" ms is when the light triggers.");
       break;
 
-   case 18: //TH?
-     Serial.println(catchTh);
-       break;
+    case 18: //TH?
+      Serial.println(catchTh);
+        break;
 
-   case 19: //SETTH
-     while (!Serial.available());
-     Serial.readBytesUntil(' ', valbuf, 15);
-     catchTh = atoi(valbuf);
-     Serial.println("OK");
-     break;
+    case 19: //SETTH
+      while (!Serial.available());
+      Serial.readBytesUntil(' ', valbuf, 15);
+      catchTh = atoi(valbuf);
+      Serial.println("OK");
+      break;
 
     case 20: //*IDN?
       Serial.println("Quantum");

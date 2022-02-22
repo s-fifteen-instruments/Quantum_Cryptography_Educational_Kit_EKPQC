@@ -17,7 +17,7 @@ with open(devloc_file) as f:
 serial_addr = 'COM6'
 
 # Other parameters declarations
-baudrate = 115200      # Default in Arduino
+baudrate = 38400      # Default in Arduino
 rep_wait_time = 0.3  # Wait time between packets (in s).
 timeout = 0.1        # Serial timeout (in s).
 

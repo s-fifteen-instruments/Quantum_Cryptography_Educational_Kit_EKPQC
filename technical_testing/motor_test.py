@@ -13,8 +13,8 @@ file_name = '1214.csv'
 timingfile_name = 'timing1.csv'
 
 dev = pw.PowerMeter('COM5') # Power Meter
-#ardu = serial.Serial(port = 'COM12', baudrate = 115200, timeout = 1) # Arduino
-ardu = sc.SerialConnection(device_path= 'COM12', baud_rate=115200)
+#ardu = serial.Serial(port = 'COM12', baudrate = 38400, timeout = 1) # Arduino
+ardu = sc.SerialConnection(device_path= 'COM12', baud_rate=38400)
 
 def one_call(cmd: str, wavelength):
     anglestr = cmd

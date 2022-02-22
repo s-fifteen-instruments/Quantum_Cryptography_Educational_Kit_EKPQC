@@ -5,7 +5,7 @@ import numpy as np
 
 sender_path = 'COM6'
 receiver_path = 'COM3'
-baud_rate = 115200
+baud_rate = 38400
 timeout = 0.1
 file_name = 'qwp_test.csv'
 

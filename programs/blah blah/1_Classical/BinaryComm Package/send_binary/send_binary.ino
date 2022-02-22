@@ -23,7 +23,7 @@ IRsend irsend;
 
 void setup(){
   // Open up the serial communication
-  Serial.begin(115200);
+  Serial.begin(38400);
   Serial.setTimeout(serial_timeout);
 }
 

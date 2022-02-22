@@ -10,7 +10,7 @@ class MotorControl(object):
 # Module for communicating with the arduino analog pin
 
 	def __init__(self, port):
-		self.baudrate = 115200 # Arduino baudrate
+		self.baudrate = 38400 # Arduino baudrate
 		self.serial = serial.Serial(port = port, baudrate = self.baudrate, timeout=3)
 		stuck_flag = True
 		while stuck_flag:
@@ -63,13 +63,13 @@ class MotorControl(object):
 
 	def set_threshold(self,threshold):
 		#Sets the detector threshold from 0-1023. 200 is approx. 1V
-		writeStr = 'SETCATCHTH ' + str(threshold) + ' '
+		writeStr = 'SETTH ' + str(threshold) + ' '
 		self.serial.write(writeStr.encode())
 		self.readline_fix()
 
 	def get_threshold(self):
 		#Gets the detector threshold from 0-1023. 200 is approx. 1V
-		self.serial.write('CATCHTH? '.encode())
+		self.serial.write('TH? '.encode())
 		threshold = self.readline_fix()
 		return threshold
 

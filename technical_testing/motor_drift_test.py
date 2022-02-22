@@ -10,7 +10,7 @@ from datetime import datetime
 
 port1 = 'COM6'
 port2 = 'COM3'
-baud_rate = 115200
+baud_rate = 38400
 timeout = 0.1
 period = 1 # seconds
 file_name = 'motor_drift1.csv'

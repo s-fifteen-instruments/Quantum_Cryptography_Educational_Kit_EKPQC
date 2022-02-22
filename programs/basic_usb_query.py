@@ -3,7 +3,7 @@ import serial
 
 porto = 'COM7'
 
-dev = serial.Serial(porto, baudrate=115200, timeout=0.1)
+dev = serial.Serial(porto, baudrate=38400, timeout=0.1)
 
 print("Opening the serial port...")
 time.sleep(2) # Ports take longer to fully open on some systems.

@@ -99,7 +99,7 @@ class MyWindowClass(QMainWindow, form_class):
         for index, port in enumerate(self.ports):
             try:
                 # Adds Classical/Quantum identifier based on HELP text
-                dev = serial.Serial(port, baudrate=115200, timeout=0.1)
+                dev = serial.Serial(port, baudrate=38400, timeout=0.1)
                 time.sleep(2)
                 dev.reset_input_buffer()
                 dev.reset_output_buffer()
