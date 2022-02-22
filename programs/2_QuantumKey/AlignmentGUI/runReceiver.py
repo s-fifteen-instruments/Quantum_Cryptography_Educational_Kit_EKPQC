@@ -107,10 +107,10 @@ class MyWindowClass(QMainWindow, form_class):
 				time.sleep(2)
 				dev.reset_input_buffer()
 				dev.reset_output_buffer()
-				dev.write("help ".encode())
+				dev.write("*IDN? ".encode())
 				while True:
 					if dev.in_waiting:
-						response = dev.readlines()[0].decode().strip().split()[0]
+						response = dev.readlines()[0].decode().strip()
 						self.ports[index] += " (" + response + ")"
 						break
 				dev.close()
@@ -207,7 +207,7 @@ class MyWindowClass(QMainWindow, form_class):
 					#self.labelPower.setText(power_str + " V")
 					self.ydata[read_count] = self.voltage_A0
 					read_count += 1
-					print(self.xdata[read_count], power_str)
+					print(self.xdata[read_count], power_str,sep='\t')
 				except:
 					# Sometime the serial channel needs to clear some junks
 					pass
