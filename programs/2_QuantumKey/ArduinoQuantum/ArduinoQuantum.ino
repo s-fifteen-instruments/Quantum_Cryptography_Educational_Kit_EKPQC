@@ -33,14 +33,14 @@ const int EEloc_polOffset = 4;  // Takes 2 bytes
 
 int polSeq[seqLength] = {0}; // int datatype, in multiples of 45 degrees.
 
-const int seqStepTime = 800;  // Time between each steps. Def: 1500 ms
+const int seqStepTime = 300;  // Time between each steps. Def: 200 ms
 const int seqInitTarget = 1;   // Set initialization polarisation for seq always (D)
-const int seqPinStart = 100;  // Time in sequence to start / ON the pin
-const int seqPinStop = 700;   // Time in sequence to stop / OFF the pin
-const int seqReadTime = 600;  // 1300 ms (hopefully in the middle of the laser pulse)
-const int seqSyncBlink = 500;  // 200 ms (to initialise the signal)
+const int seqPinStart = 0;  // Time in sequence to start / ON the pin
+const int seqPinStop = 300;   // Time in sequence to stop / OFF the pin
+const int seqReadTime = 150;  // 100 ms (hopefully in the middle of the laser pulse)
+const int seqSyncBlink = 300;  // 200 ms (to initialise the signal)
 //int moveType;
-int moveStepper(int = 1);
+int moveStepper(int moveType = 1, int steps = 30); //2:approachAngle, anything else: gotoAngle 
     
 // To deal with floating point rounding off error
 // in the conversion between angle and steps,
@@ -226,7 +226,7 @@ void loop() {
       sensorVoltage = sensorValue * (5.0 / 1023.0);
       // Serial.print("Val: ");
       Serial.println(sensorValue);
-      // Serial.println(sensorVoltage,3);
+      //Serial.println(sensorVoltage,3);
       break;
       
     case 14: //RUNSEQ
@@ -300,10 +300,10 @@ unsigned long lasCatch(){
   while (sensorValue < catchTh){
     sensorValue = analogRead(sensorLoc);
   }
-  Serial.print("sensorVal: ");
-  Serial.println(sensorValue);
-  Serial.print("catchTh: ");
-  Serial.println(catchTh);
+  //Serial.print("sensorVal: ");
+  //Serial.println(sensorValue);
+  //Serial.print("catchTh: ");
+  //Serial.println(catchTh);
   return millis();
 }
 
@@ -314,7 +314,7 @@ int specialRandom(int array[], int arrayLength, int maxVal){
   }
 }
 
-int moveStepper(int moveType) {
+int moveStepper(int moveType, int steps) {
   // Serial.print("moveStepper called with moveType:");
   // Serial.println(moveType);
   int current;
@@ -324,7 +324,7 @@ int moveStepper(int moveType) {
   EEPROM_readAnything(EEloc_angleTarget, target);
   if (moveType==2) {
 //     Serial.println("Calling approachAngle");
-    myMotor.approachAngle(target);
+    myMotor.approachAngle(target, steps);
   } else {
     //Serial.println("Calling gotoAngle");
     //Serial.print("target is:");
@@ -399,7 +399,7 @@ int runSequence(int mode){
   EEPROM_writeAnything(EEloc_angleTarget, angleTarget);
   // Move motor using the more precise approachAngle function 
   //(default is gotoAngle with up to 5 deg variation)
-  moveStepper(2);
+  moveStepper(2, 30);
   
   if (mode == 1){
     timeStep = millis() + seqSyncBlink; // Get the next time step
@@ -413,7 +413,7 @@ int runSequence(int mode){
     digitalWrite(pinLsr, LOW);         
     timeStep += seqSyncBlink; // Set the main sequence trigger
   } else if (mode == 2) {
-    Serial.println("Listen for sync pulse."); // debug
+    //Serial.println("Listen for sync pulse."); // debug
     timeStep = lasCatch();    // Caught the sync signal
     timeStep+= 2 * seqSyncBlink;
   } else{
@@ -431,7 +431,7 @@ int runSequence(int mode){
     angleTarget = polSeq[i] * 45 + polOffset;
     EEPROM_writeAnything(EEloc_angleTarget, angleTarget);
     // Serial.println("Moving to prescribed angle");
-    moveStepper(2);
+    moveStepper(2, 20);
 
     timeStep = millis();
     // Perform operation on the laser / sensor
@@ -450,7 +450,7 @@ int runSequence(int mode){
   // Go back to initialisation (def: D)
   angleTarget = seqInitTarget * 45 + polOffset;
   EEPROM_writeAnything(EEloc_angleTarget, angleTarget);
-  moveStepper(2);
+  moveStepper(2,30);
   
   // Sends the measurement values to serial (for mode == 2)
   if (mode == 2){

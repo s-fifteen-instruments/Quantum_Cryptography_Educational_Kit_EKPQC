@@ -28,7 +28,7 @@ decode_results results;
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(38400);
   irrecv.enableIRIn(); // Start the receiver
   pinMode(BUTTON_PIN, INPUT);
   pinMode(STATUS_PIN, OUTPUT);

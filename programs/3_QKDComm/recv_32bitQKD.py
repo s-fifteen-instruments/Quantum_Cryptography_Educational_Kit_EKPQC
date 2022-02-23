@@ -141,7 +141,7 @@ def keySiftBobC(resB_str, basB_str):
     return siftkey_str
 
 # Other parameters declarations
-baudrate = 9600      # Default in Arduino
+baudrate = 38400      # Default in Arduino
 rep_wait_time = 1    # 1 s wait time between each tries
 timeout = 0.1        # Serial timeout (in s).
 

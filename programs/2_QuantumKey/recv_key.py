@@ -13,22 +13,22 @@ def tohex(val, nbits):
   return hex((val + (1 << nbits)) % (1 << nbits))
 
 # Obtain device location
-devloc_file = '../devloc_quantum.txt'
-with open(devloc_file) as f:
-    content = f.readlines().decode()[0]
-    if content[-1] == '\n':  # Remove an extra \n
-        content = content[:-1]
+# devloc_file = '../devloc_quantum.txt'
+# with open(devloc_file) as f:
+#     content = f.readlines()[0]
+#     if content[-1] == '\n':  # Remove an extra \n
+#         content = content[:-1]
 
 # Obtain threshold
-threshold_file = '../threshold.txt'
-with open(threshold_file) as f:
-    content = f.readlines().decode()[0]
-    if content[-1] == '\n':  # Remove an extra \n
-        content = content[:-1]
-threshold = float(content) # Get the float value
+# threshold_file = '../threshold.txt'
+# with open(threshold_file) as f:
+#     content = f.readlines()[0]
+#     if content[-1] == '\n':  # Remove an extra \n
+#         content = content[:-1]
+threshold = 157 # float(content) # Get the float value
 
 # Other parameters declarations
-baudrate = 9600      # Default in Arduino
+baudrate = 38400      # Default in Arduino
 timeout = 0.1        # Serial timeout (in s).
 serial_addr = "COM7" # Hard-coded for now
 
@@ -52,7 +52,7 @@ receiver.write('RNDBAS '.encode())
 # Block until receive reply
 while True:
     if receiver.in_waiting:
-        print((receiver.readlines().decode()[0])) # Should display OK
+        print((receiver.readlines()[0].decode())) # Should display OK
         break
 
 print("Arduino says he/she likes to choose the following bits:")
@@ -63,7 +63,7 @@ receiver.write('SEQ? '.encode())
 # Block until receive 1st reply
 while True:
     if receiver.in_waiting:
-        bas_str = receiver.readlines().decode()[0][:-1] # Remove the /n
+        bas_str = receiver.readlines()[0].decode()[:-1] # Remove the /n
         break
 
 # Giving the reply in HEX format
@@ -77,13 +77,15 @@ receiver.write('RXSEQ '.encode())
 # Block until receive reply
 while True:
     if receiver.in_waiting:
-        meas_str = receiver.readlines().decode()[0][:-1] # Remove the /n
+        meas_str = receiver.readlines()[0].decode()[:-1] # Remove the /n
         break
 
 # Obtain the measured bits
 meas_arr = meas_str.split()
+# print (meas_str)
 res_str = ''
 for val in meas_arr:
+    # print (val)
     if int(val) > threshold: # Higher than threshold -> 0
         res_str += '0'
     else:               # Lower than threshold -> 1

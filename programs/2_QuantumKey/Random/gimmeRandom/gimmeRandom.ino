@@ -10,7 +10,7 @@ const int seqLength = 50;
 int randomArr[seqLength] = {}; 
 
 void setup(){
-  Serial.begin(9600);
+  Serial.begin(38400);
   Serial.println("Generating numbers...");
   Entropy.initialize();
   specialRandom(randomArr, seqLength, 10);

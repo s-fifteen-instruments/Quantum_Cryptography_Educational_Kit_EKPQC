@@ -1,5 +1,3 @@
-#!/usr/bin/env python2
-
 '''
 Python wrapper program to send a sequence of 16 bit keys (Alice)
 without key sifting (it will be done manually).
@@ -16,14 +14,14 @@ def tohex(val, nbits):
 
 # Obtain device location
 devloc_file = '../devloc_quantum.txt'
-with open(devloc_file) as f:
-    content = f.readlines().decode()[0]
-    if content[-1] == '\n':  # Remove an extra \n
-        content = content[:-1]
-serial_addr = content
+# with open(devloc_file) as f:
+#     content = f.readlines()[0]
+#     if content[-1] == '\n':  # Remove an extra \n
+#         content = content[:-1]
+serial_addr = 'COM3' # Hard-coded for now
 
 # Other parameters declarations
-baudrate = 9600      # Default in Arduino
+baudrate = 38400      # Default in Arduino
 timeout = 0.1        # Serial timeout (in s).
 
 # Opens the sender side serial port
@@ -46,7 +44,7 @@ sender.write('RNDSEQ '.encode())
 # Block until receive reply
 while True:
     if sender.in_waiting:
-        print(sender.readlines().decode()[0]) # Should display OK
+        print(sender.readlines()[0].decode()) # Should display OK
         break
 
 print("Arduino says he/she likes to choose the following bits:")
@@ -57,7 +55,7 @@ sender.write('SEQ? '.encode())
 # Block until receive 1st reply
 while True:
     if sender.in_waiting:
-        reply_str = sender.readlines().decode()[0][:-1] # Remove the /n
+        reply_str = sender.readlines()[0][:-1].decode() # Remove the /n
         break
 
 # Obtain the binary string repr for val and bas bits
@@ -80,7 +78,7 @@ sender.write('TXSEQ '.encode())
 # Block until receive reply
 while True:
     if sender.in_waiting:
-        print(sender.readlines().decode()[0]) # Should display OK
+        print(sender.readlines()[0].decode()) # Should display OK
         break
 
 # Print last statement and exits the program
