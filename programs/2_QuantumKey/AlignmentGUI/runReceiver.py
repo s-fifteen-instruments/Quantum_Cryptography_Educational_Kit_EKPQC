@@ -145,7 +145,7 @@ class MyWindowClass(QMainWindow, form_class):
 		self.ydata = np.zeros(361)
 		self.plot = self.plotWidget.plot(self.xdata, self.ydata, pen={'color':(255,0,0),'width':2})
 		# Some cosmetics
-		self.plotWidget.setLimits(xMin = self.xdata[0], xMax = self.xdata[-1])
+		self.plotWidget.setLimits(xMin = self.xdata[0], xMax = self.xdata[-1], yMin=0.0,yMax=5.0)
 		self.plotWidget.getAxis('bottom').setTicks([[(value,str(value)) for value in np.arange(-180+self.offset,181+self.offset,45).tolist()]])
 		self.plotWidget.showGrid(x=True)
 		"""
@@ -170,7 +170,7 @@ class MyWindowClass(QMainWindow, form_class):
 			self.curr_angle = float(self.motor.get_angle())
 			self.offset  = int(self.motor.get_offset())
 			self.threshold = int(self.motor.get_threshold())
-			self.update_threshold(self.threshold())
+			self.update_threshold(self.threshold)
 			self.update_offset(self.offset)
 			self.update_angle(self.curr_angle)
 			self.deviceRunning = not self.deviceRunning
@@ -215,10 +215,14 @@ class MyWindowClass(QMainWindow, form_class):
 					pass
 			self.scanned = True
 			# Plot data
-			self.plotWidget.setLimits(xMin = self.xdata[0], xMax = self.xdata[-1])
+			self.plotWidget.setLimits(xMin = self.xdata[0], xMax = self.xdata[-1],yMin=0.0,yMax=5.0)
 			self.plot.setData(self.xdata, self.ydata)
 			self.plotWidget.getAxis('bottom').setTicks([[(value,str(value)) for value in np.arange(-180+self.offset,181+self.offset,45).tolist()]])
 			self.plotWidget.showGrid(x=True)
+			ymax = self.ydata.max()
+			ymin = self.ydata.min()
+			visibility = (ymax-ymin)/(ymax+ymin)
+			self.visibilityLabel.setText(f"Visibility is {visibility:.4f}")
 			self.statusbar.showMessage("Scanning... Done")
 		else:
 			self.labelPower.setText("OFF")

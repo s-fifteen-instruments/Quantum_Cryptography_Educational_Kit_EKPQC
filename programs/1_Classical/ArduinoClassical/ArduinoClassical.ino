@@ -51,8 +51,8 @@ void loop() {
   Serial.readBytesUntil(' ', serbuf, 15); // Until whitespace
   // Obtain which input command (enumerated)
   int enumc = -1; // default choice
-  int maxChoice = 5;
-  char sercmd[maxChoice][8] = {"HELP", "SBLINK", "RBLINK", "SEND", "RECV"};
+  int maxChoice = 8;
+  char sercmd[maxChoice][8] = {"HELP", "LEDON", "LEDOFF", "SBLINK", "RBLINK", "SEND", "RECV", "*IDN?"};
   for (int c=0; c<maxChoice; c++){
     if (strcasecmp(sercmd[c],serbuf) == 0){ 
       enumc = c;// Obtain match
@@ -69,14 +69,25 @@ void loop() {
   // Switching between different cases
   switch(enumc){
     case 0: //HELP
-      Serial.print("Classical Communications Channel\n");
-      Serial.print("HELP       Print help statement\n");
-      Serial.print("SBLINK     Send blinking feature\n");
-      Serial.print("RBLINK     Recv blinking feature\n");
-      Serial.print("SEND X     Send a short message X (4 bytes)\n");
-      Serial.print("RECV       Receive a short message (4 bytes)\n");
-      break; 
-    case 1: //SBLINK
+      Serial.print(F("Classical Communications Channel\n"));
+      Serial.print(F("HELP       Print help statement\n"));
+      Serial.print(F("LEDON      Turn on IR LED\n"));
+      Serial.print(F("LEDOFF     Turn off IR LED\n"));
+      Serial.print(F("SBLINK     Send blinking feature\n"));
+      Serial.print(F("RBLINK     Recv blinking feature\n"));
+      Serial.print(F("SEND X     Send a short message X (4 bytes)\n"));
+      Serial.print(F("RECV       Receive a short message (4 bytes)\n"));
+      Serial.print(F("*IDN?      Get device identifier (Classical/Quantum)"));
+      break;
+    case 1: //LEDON
+      analogWrite(send_pin, 255);
+      Serial.println(F("LED ON!"));
+      break;
+    case 2: //LEDOFF 
+      analogWrite(send_pin, 0);
+      Serial.println(F("LED OFF!"));
+      break;
+    case 3: //SBLINK
       // Serial.print("Perform some blinking features \n");
       for (int i=0; i<blink_num; i++){
         IrSender.enableIROut(carrier_freq);
@@ -89,7 +100,7 @@ void loop() {
       }
       Serial.println("Task done.");
       break;
-    case 2: //RBLINK
+    case 4: //RBLINK
       // Serial.print("Trying to recv blinking features \n");
       // listen for blink during blink_obtime
       timeNow = millis(); // get time now
@@ -105,7 +116,7 @@ void loop() {
       }
       Serial.println("Task done.");
       break;
-    case 3: //SEND X
+    case 5: //SEND X
       // Serial.print("Trying to send a word \n");
       while(!Serial.available()); // Wait for X
       Serial.readBytes(strbuf, 4); // Read 4 characters each time
@@ -116,7 +127,7 @@ void loop() {
       Serial.print(value, HEX);  // Debug                   
       IrSender.sendNECMSB(reverseBits(value), 32);   // Send the characters
       break;
-    case 4: //RECV
+    case 6: //RECV
       //Serial.print("Trying to recv a word \n");
       while (true){
         // Decode result 
@@ -137,6 +148,9 @@ void loop() {
         }
         delay(irrecv_timeout);
       }
+      break;
+    case 7: //*IDN?
+      Serial.println(F("Classical"));
       break;
     default:
       Serial.print("Unknown command\n");

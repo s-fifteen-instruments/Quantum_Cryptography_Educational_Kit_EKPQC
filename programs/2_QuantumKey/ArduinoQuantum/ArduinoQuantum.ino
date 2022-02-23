@@ -33,11 +33,11 @@ const int EEloc_polOffset = 4;  // Takes 2 bytes
 
 int polSeq[seqLength] = {0}; // int datatype, in multiples of 45 degrees.
 
-const int seqStepTime = 500;  // Time between each steps. Def: 1500 ms
+const int seqStepTime = 800;  // Time between each steps. Def: 1500 ms
 const int seqInitTarget = 1;   // Set initialization polarisation for seq always (D)
-const int seqPinStart = 50;  // Time in sequence to start / ON the pin
-const int seqPinStop = 450;   // Time in sequence to stop / OFF the pin
-const int seqReadTime = 250;  // 1300 ms (hopefully in the middle of the laser pulse)
+const int seqPinStart = 100;  // Time in sequence to start / ON the pin
+const int seqPinStop = 700;   // Time in sequence to stop / OFF the pin
+const int seqReadTime = 600;  // 1300 ms (hopefully in the middle of the laser pulse)
 const int seqSyncBlink = 500;  // 200 ms (to initialise the signal)
 //int moveType;
 int moveStepper(int = 1);
