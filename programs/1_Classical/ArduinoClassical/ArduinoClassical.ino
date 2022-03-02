@@ -124,16 +124,17 @@ void loop() {
               | (unsigned long) strbuf[1] << 16
               | (unsigned long) strbuf[2] << 8
               | (unsigned long) strbuf[3];
-      Serial.print(value, HEX);  // Debug                   
+      //Serial.print(value, HEX);  // Debug                   
       IrSender.sendNECMSB(reverseBits(value), 32);   // Send the characters
+      delay((RECORD_GAP_MICROS / 1000) + 1); // delay must be greater than 5 ms (RECORD_GAP_MICROS), otherwise the receiver sees it as one long signal
       break;
     case 6: //RECV
-      //Serial.print("Trying to recv a word \n");
+      // Listening to incoming pulse
+      IrReceiver.resume();
       while (true){
         // Decode result 
         if (IrReceiver.decode()) {
-          Serial.print(IrReceiver.decodedIRData.decodedRawData, HEX); // Print HEX characters
-          IrReceiver.resume();
+          Serial.print(IrReceiver.decodedIRData.decodedRawData, HEX); // Print HEX characters         
           break;
         }
         // Cancel operation (if escape char received)

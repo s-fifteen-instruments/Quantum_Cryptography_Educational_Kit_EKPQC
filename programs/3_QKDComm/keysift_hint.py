@@ -72,7 +72,7 @@ while True:
             siftkey_bin = ''
             siftkey_len = 0
             for bit in siftmask_bin:
-                if bit is 'X':
+                if bit == 'X':
                     pass
                 else:
                     siftkey_bin += bit
@@ -130,7 +130,7 @@ while True:
             siftkey_bin = ''
             siftkey_len = 0
             for bit in siftmask_bin:
-                if bit is 'X':
+                if bit == 'X':
                     pass
                 else:
                     siftkey_bin += bit

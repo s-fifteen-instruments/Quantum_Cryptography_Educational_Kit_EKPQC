@@ -3,6 +3,14 @@ Python wrapper program to send commands to Arduino Classical to turn sender
 LED on and off. The purpose is to serve as a simple demonstration of how a
 phone camera can capture wavelengths that the eye cannot. The sender LED used
 in the Mar 2022 iteration emits 940nm light.
+
+Usage: Start the program in a command line (eg. Command Prompt for Windows). 
+Enter the commands 'LEDON ' or 'LEDOFF '. Note the space after the letters - 
+it is used to indicate the end of the command and the computer can begin to 
+process the whole of message. The commands are also not case-sensitive, you may
+try this out with any combination of capital and non-capital letters. All 
+commands that do not fit the above description will be met with an 'Unknown
+Command'.
 Author: JH 2022
 '''
 
@@ -38,9 +46,11 @@ print("To exit the program, use Ctrl+C\n")
 while True:
     try:
         x=input("Enter command here: ")
+        # Convert user input to lower case and check for a match
         if x.lower() == "ledon" or x.lower() == "ledoff":
             device.write(x.encode())
             time.sleep(0.1)
+            # Read response, convert bits to string, remove EOL characters
             response = device.readlines()[0].decode().strip()
             print(response)
             continue

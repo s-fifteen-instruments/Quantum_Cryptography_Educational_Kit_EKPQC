@@ -180,11 +180,16 @@ float PolarizerMotor::approachAngle(int targetAngle, int wrap, int steps)
       if (deltaAngle < -180) deltaAngle += 360;
     }
         
-    // Set speed to approach the target
+    // Wait until the loop is finished if target precision achieved
+    if (deltaAngle < this->anglePrecision and deltaAngle > -this->anglePrecision) {
+      setSpeed(0); 
+    } else {    
+    // Set speed if target angle not achieved
     if (deltaAngle > 0) 
-      setSpeed(deltaAngle + this->cLoopSpeedOffset); // positive values
+      setSpeed(0.5*deltaAngle + this->cLoopSpeedOffset); // positive values
     else
-      setSpeed(deltaAngle - this->cLoopSpeedOffset); // negative values
+      setSpeed(0.5*deltaAngle - this->cLoopSpeedOffset); // negative values
+    };
     
   }
   

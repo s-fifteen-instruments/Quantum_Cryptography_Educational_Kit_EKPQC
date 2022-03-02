@@ -14,7 +14,7 @@ with open(devloc_file) as f:
     content = f.readlines()[0]
     if content[-1] == '\n':  # Remove an extra \n
         content = content[:-1]
-serial_addr = 'COM7'
+serial_addr = 'COM9'
 
 # Other parameters declarations
 baudrate = 38400      # Default in Arduino
@@ -77,7 +77,7 @@ while True:
                 hex_string = device.read(8)
                 device.write('RECV '.encode()) # Flag to recv
                 # Looking for start of text
-                if hex_string[:7] == b'2111111':
+                if hex_string[:7] == b'2131313':
                     print ("--- START OF TEXT ---")
                     state = 1
                 elif state == 1:

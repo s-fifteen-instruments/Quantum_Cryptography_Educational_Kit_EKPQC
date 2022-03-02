@@ -14,7 +14,7 @@ with open(devloc_file) as f:
     content = f.readlines()[0]
     if content[-1] == '\n':  # Remove an extra \n
         content = content[:-1]
-serial_addr = 'COM6'
+serial_addr = 'COM5'
 
 # Other parameters declarations
 baudrate = 38400      # Default in Arduino
@@ -46,7 +46,7 @@ while True:
         else:   # Send the message lor
             # Iterate and send the string
             device.write('SEND '.encode()) # Flag to send
-            device.write(b'\x02\x11\x11\x11') # Start of text
+            device.write(b'\x02\x13\x13\x13') # Start of text
             time.sleep(rep_wait_time)
             str_ptr = 0
             max_str = len(tosend_string)

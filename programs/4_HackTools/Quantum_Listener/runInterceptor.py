@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Created a day before Qcamp2018
 Some parts were inspired from pulse fitting.
@@ -34,7 +33,7 @@ form_class = uic.loadUiType("guiInterceptor.ui")[0]
 def find_noise(x):
 	"""guesses the noise floor as the most frequently occuring value"""
 	noise = Counter(x).most_common(1)[0][0]
-	# print noise
+	print (noise)
 	return noise
 
 def tohex(val, nbits):
@@ -171,18 +170,20 @@ def manualClassify(voltage, voltageClasses):
 	# argmin finds the element position in voltageClasses that best matches voltage
 	return np.argmin((voltage-voltageClasses)**2)
 
+
 def remove_header(signals,numConstant=3):
 	"""
 	Removes the header that has the signature of a high voltage being numConstant number of points
 	"""
 	ds = np.diff(signals)
-
+	print (ds)
 	# Finds non-zero signal regions
 	starts = np.where(ds>0)[0]
 	stops = np.where(ds<0)[0]
+	print (starts)
+	print (stops)
 
-
-	print((starts, '\n', stops))
+	#print((starts, '\n', stops))
 
 	# plt.figure()
 	# plt.scatter(starts,stops)
@@ -278,6 +279,7 @@ class MyWindowClass(QMainWindow, form_class):
 			noiseY = find_noise(y)
 
 			noTally = np.logical_xor(x>noise,y>noise)
+			print (np.size(noTally),np.size(y))
 			#self.signal_plot.plot((noTally))
 
 			for i in np.where(noTally):
@@ -290,6 +292,8 @@ class MyWindowClass(QMainWindow, form_class):
 
 		# KMeans
 		self.labels2D, self.classes, self.voltageClasses2D, self.voltageSpreads2D = kclassify2D(self.dev1,self.dev2,numClasses=5)
+		print (self.labels2D)
+
 
 		# Reformat integer classes to alphabets to reduce confusion
 		self.alphabeticalClasses = [list(string.ascii_uppercase)[Class] for Class in self.classes]

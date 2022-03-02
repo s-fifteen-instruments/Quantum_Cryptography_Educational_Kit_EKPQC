@@ -95,7 +95,6 @@ void loop() {
   char polseqbuf[seqLength] = ""; // Buffer to receive chartype pol sequences from serial 
   int polSeqMod[seqLength] = {0}; // Polarisation sequence within the range (0,3).       
   int sensorValue;
-  float sensorVoltage;
   
   
   // Switching between different cases
@@ -223,10 +222,8 @@ void loop() {
       
     case 13: //VOLT?
       sensorValue = analogRead(sensorLoc);
-      sensorVoltage = sensorValue * (5.0 / 1023.0);
       // Serial.print("Val: ");
       Serial.println(sensorValue);
-      //Serial.println(sensorVoltage,3);
       break;
       
     case 14: //RUNSEQ

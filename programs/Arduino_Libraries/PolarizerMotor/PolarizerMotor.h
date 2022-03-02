@@ -39,7 +39,7 @@ class PolarizerMotor {
     
     // approach the angle and keep doing the control loop. Preserve sync functionality.
     // Returns the last angle read by the setup.
-    float approachAngle(int targetAngle, int wrap=1, int steps = 20);
+    float approachAngle(int targetAngle, int wrap=1, int steps = 30);
     
     
   private:
@@ -62,7 +62,7 @@ class PolarizerMotor {
     float feedbackMinDC = 0.029;   // min duty cycle of the feedback pwm (0 deg)
     float feedbackMaxDC = 0.971;   // max duty cycle of the feedback pwm (360 deg)
      
-    int cLoopSpeedOffset = 30;     // speed offset for the control loop  
+    int cLoopSpeedOffset = 35;     // speed offset for the control loop  
     int rotationPolarity = -1;     // polarity of rotation, either -1 or +1
 };
 

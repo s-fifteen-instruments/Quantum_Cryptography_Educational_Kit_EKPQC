@@ -1,5 +1,3 @@
-#!/usr/bin/env python2
-
 '''
 Python wrapper program to eavesdrop on the IR channel (continously)
 Author: Qcumber 2018

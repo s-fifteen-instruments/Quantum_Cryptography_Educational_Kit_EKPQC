@@ -1,5 +1,3 @@
-#!/usr/bin/env python2
-
 '''
 Python wrapper program to receive a string through the IR channel with
 the NEC-string protocol.

@@ -1,5 +1,3 @@
-#!/usr/bin/env python2
-
 '''
 Python wrapper program to encrypt a message using the secure key
 The key is expanded with Mersenne Twister PRNG.

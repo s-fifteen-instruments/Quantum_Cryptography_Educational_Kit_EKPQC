@@ -1,5 +1,3 @@
-#!/usr/bin/env python2
-
 '''
 Python wrapper program to send 32 bits QKD keys via
 quantum and classial channel
@@ -17,24 +15,24 @@ rep_wait_time = 0.3  # Wait time between packets (in s).
 # Obtain device location
 devloc_fileC = '../devloc_classical.txt'
 devloc_fileQ = '../devloc_quantum.txt'
-with open(devloc_fileC) as f:
-    contentC = f.readlines()[0]
-    if contentC[-1] == '\n':  # Remove an extra \n
-        contentC = contentC[:-1]
-with open(devloc_fileQ) as f:
-    contentQ = f.readlines()[0]
-    if contentQ[-1] == '\n':  # Remove an extra \n
-        contentQ = contentQ[:-1]
-serial_addrC = contentC
-serial_addrQ = contentQ
+# with open(devloc_fileC) as f:
+#     contentC = f.readlines()[0]
+#     if contentC[-1] == '\n':  # Remove an extra \n
+#         contentC = contentC[:-1]
+# with open(devloc_fileQ) as f:
+#     contentQ = f.readlines()[0]
+#     if contentQ[-1] == '\n':  # Remove an extra \n
+#         contentQ = contentQ[:-1]
+serial_addrC = 'COM9' #contentC
+serial_addrQ = 'COM7' #contentQ
 
 # Obtain threshold
-threshold_file = '../threshold.txt'
-with open(threshold_file) as f:
-    content = f.readlines()[0]
-    if content[-1] == '\n':  # Remove an extra \n
-        content = content[:-1]
-threshold = float(content) # Get the float value
+# threshold_file = '../threshold.txt'
+# with open(threshold_file) as f:
+#     content = f.readlines()[0]
+#     if content[-1] == '\n':  # Remove an extra \n
+#         content = content[:-1]
+threshold = 400 #float(content) # Get the float value
 
 ''' Helper functions '''
 
@@ -44,25 +42,27 @@ def tohex(val, nbits):
 
 def send4BytesC(message_str):
     if len(message_str) == 4:
-        deviceC.write('SEND ') # Send identifier [BEL]x3 + B
-        deviceC.write(b'\x07\x07\x07' + 'B') # This is Bob (receiver)
+        deviceC.write('SEND '.encode()) # Send identifier [BEL]x3 + B
+        deviceC.write(b'\x07\x07\x07' + 'B'.encode()) # This is Bob (receiver)
         time.sleep(rep_wait_time)
-        deviceC.write('SEND ') # Flag to send
-        deviceC.write(message_str)
+        deviceC.write('SEND '.encode()) # Flag to send
+        deviceC.write(message_str.encode())
         print(message_str)
     else:
         print("The message is not 4 bytes. Please check again")
 
 def recv4BytesC():
     deviceC.reset_input_buffer() # Flush all the garbages
-    deviceC.write('RECV ') # Flag to recv (the header)
+    deviceC.write('RECV '.encode()) # Flag to recv (the header)
     state = 0   # 0: waiting for STX, 1: transmitting/ wait for ETX
     while True:            # Block until receives a reply
         if deviceC.in_waiting:
-            hex_string = deviceC.read(8)
+            hex_string = deviceC.read(8).decode()
+            print(f'hex_string: {hex_string}') #Debug
+            print("state:", state)
             if hex_string == '7070741':  # 07-[BEL], 41-A (Header from Alice)
                 # print ("Received message!") # Debug
-                deviceC.write('RECV ')   # Receive the message
+                deviceC.write('RECV '.encode())   # Receive the message
                 state = 1
             elif state == 1:
                 break
@@ -75,26 +75,26 @@ def recv4BytesC():
 def recvKeyQ():
     print("Generating random basis choices...")
     # Randomising the sequence
-    deviceQ.write('RNDBAS ')
+    deviceQ.write('RNDBAS '.encode())
     # Block until receive reply
     while True:
         if deviceQ.in_waiting:
-            print(deviceQ.readlines()[0][:-1]) # Should display OK
+            print(deviceQ.readlines()[0].decode().strip()) # Should display OK
             break
     # Find out what is the key
-    deviceQ.write('SEQ? ')
+    deviceQ.write('SEQ? '.encode())
     # Block until receive 1st reply
     while True:
         if deviceQ.in_waiting:
-            bas_str = deviceQ.readlines()[0][:-1] # Remove the /n
+            bas_str = deviceQ.readlines()[0].decode().strip() # Remove the /n
             break
     # Run the sequence
     print("Running the sequence and performing measurement...")
-    deviceQ.write('RXSEQ ')
+    deviceQ.write('RXSEQ '.encode())
     # Block until receive reply
     while True:
         if deviceQ.in_waiting:
-            mes_str = deviceQ.readlines()[0][:-1] # Remove the /n
+            mes_str = deviceQ.readlines()[0].decode().strip() # Remove the /n
             break
     print("Finished...")
     # Obtain the measured bits
@@ -132,7 +132,7 @@ def keySiftBobC(resB_str, basB_str):
     # Remove all the X'es
     siftkey_str = ''
     for bit in siftmask_str:
-        if bit is 'X':
+        if bit == 'X':
             pass
         else:
             siftkey_str += bit
@@ -142,7 +142,6 @@ def keySiftBobC(resB_str, basB_str):
 
 # Other parameters declarations
 baudrate = 38400      # Default in Arduino
-rep_wait_time = 1    # 1 s wait time between each tries
 timeout = 0.1        # Serial timeout (in s).
 
 # Opens the sender side serial port
@@ -198,6 +197,6 @@ try:
 
 except KeyboardInterrupt:
     # End of program
-    deviceC.write('#') # Flag to force end listening
+    deviceC.write('#'.encode()) # Flag to force end listening
     print ("\nProgram interrupted. Thank you for using the program!")
     sys.exit()  # Exits the program
