@@ -196,6 +196,23 @@ def remove_header(signals,numConstant=3):
 	headerless_signal = [signal for i, signal in enumerate(signals) if not np.any((i>=header_starts)&(i<=header_stops))]
 	return headerless_signal
 
+def process_clustered_signals(signals):
+
+	# Find nonzero entries in an array
+	nonzero_idx = np.nonzero(signals)[0]
+	print (nonzero_idx)
+
+	consecutives_idx = np.split(nonzero_idx, np.where(np.diff(nonzero_idx) != 1)[0]+1)
+	result_list = []
+	for groups_idx in consecutives_idx:
+		result =  Counter(signals[groups_idx]).most_common(1)[0][0]
+		result_list.append(result)
+
+	# Remove the initialisation signals (idx 0, 17, etc)
+	del result_list[0::17]
+
+	return (result_list)
+
 def insanity_check(number, min_value, max_value):
 	''' To check whether the value is out of given range'''
 	if number > max_value:
@@ -360,24 +377,28 @@ class MyWindowClass(QMainWindow, form_class):
 			polAssignment = [c0,c1,c2,c3,c4] #[H,D,V,A,noise]
 			polAssignment = [string.ascii_uppercase.index(c) for c in polAssignment] # convert to indices
 			noiseLabel = polAssignment[-1]
-			# Removes headers
-			if self.header_removed==False:
-				self.labels2D = remove_header(self.labels2D)
-				self.header_removed = True
+			# # Removes headers
+			# if self.header_removed==False:
+			# 	self.labels2D = remove_header(self.labels2D)
+			# 	self.header_removed = True
 
-			# Removes duplicates
-			if self.duplicates_removed==False:
-				self.labels2D = remove_adjacent_duplicates(self.labels2D)
-				self.duplicates_removed=True
+			# # Removes duplicates
+			# if self.duplicates_removed==False:
+			# 	self.labels2D = remove_adjacent_duplicates(self.labels2D)
+			# 	self.duplicates_removed=True
 
-			# Removes noise
-			if self.noise_removed==False:
-				self.labels2D = self.labels2D[self.labels2D!=noiseLabel]
-				self.noise_removed=True
+			# # Removes noise
+			# if self.noise_removed==False:
+			# 	self.labels2D = self.labels2D[self.labels2D!=noiseLabel]
+			# 	self.noise_removed=True
+
+			self.result = process_clustered_signals(self.labels2D)
+			print (self.result)
+			print (len(self.result))
 
 			#print('shape={}'.format(self.labels2D.shape))
 
-			rawKey = [np.where(polAssignment==label) for label in self.labels2D]
+			rawKey = [np.where(polAssignment==label) for label in self.result]
 			#print(rawKey)
 			return np.array(rawKey).flatten()
 
