@@ -8,12 +8,12 @@ import sys
 import time
 
 # Obtain device location
-devloc_file = '../../devloc_classical.txt'
-with open(devloc_file) as f:
-    content = f.readlines()[0]
-    if content[-1] == '\n':  # Remove an extra \n
-        content = content[:-1]
-serial_addr = content
+# devloc_file = '../../devloc_classical.txt'
+# with open(devloc_file) as f:
+#     content = f.readlines()[0]
+#     if content[-1] == '\n':  # Remove an extra \n
+#         content = content[:-1]
+serial_addr = 'COM9'
 
 # Other parameters declarations
 baudrate = 38400      # Default in Arduino
@@ -34,21 +34,21 @@ print("To exit the program, use Ctrl+C")
 print("Waiting for data ... ")
 
 receiver.reset_input_buffer() # Flush all the garbages
-receiver.write('RECV ') # Flag to recv
+receiver.write('RECV '.encode()) # Flag to recv
 
 while True:
     try:
         if receiver.in_waiting:
-            hex_string = receiver.read(8)
-            receiver.write('RECV ') # Flag to recv (again)
+            hex_string = receiver.read(8).decode()
+            # print(f'\nhex string: {hex_string}')   
             # Looking for any kind of headers
-            if hex_string[:7] == '2020202':
+            if hex_string == '2131313':
                 print ("\n--- START OF TEXT ---")
-            elif hex_string[:7] == '3030303':
+            elif hex_string == '3030303':
                 print ("\n--- END OF TEXT ---")
-            elif hex_string[:7] == '7070741':
+            elif hex_string == '7070741':
                 print ("\nIncoming message from Alice:")
-            elif hex_string[:7] == '7070742':
+            elif hex_string == '7070742':
                 print ("\nIncoming message from Bob:")
             else:
                 try:
@@ -62,7 +62,10 @@ while True:
                     sys.stdout.flush()
                 except ValueError:
                     print("\n ERROR! UNABLE TO DECODE STRING!")
+            #Flag to recv (again)
+            receiver.write('RECV '.encode()) 
+
     except KeyboardInterrupt:
-        receiver.write('#') # Flag to force end listening
+        receiver.write('#'.encode()) # Flag to force end listening
         print ("\nThank you for using the program!")
         sys.exit()  # Exits the program

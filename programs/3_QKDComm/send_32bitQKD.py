@@ -49,6 +49,7 @@ def recv4BytesC():
     hex_list = list(map(''.join, list(zip(*[iter(hex_string)]*2))))
     ascii_string = "".join([chr(int("0x"+each_hex,0)) for each_hex in hex_list])
     print(ascii_string)
+    time.sleep(rep_wait_time)  # Wait a bit so that "Eve" can listen more carefully :P
     return ascii_string
 
 def sendKeyQ():

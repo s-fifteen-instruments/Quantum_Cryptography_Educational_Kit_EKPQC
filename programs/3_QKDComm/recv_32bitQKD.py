@@ -23,7 +23,7 @@ devloc_fileQ = '../devloc_quantum.txt'
 #     contentQ = f.readlines()[0]
 #     if contentQ[-1] == '\n':  # Remove an extra \n
 #         contentQ = contentQ[:-1]
-serial_addrC = 'COM9' #contentC
+serial_addrC = 'COM8' #contentC
 serial_addrQ = 'COM7' #contentQ
 
 # Obtain threshold
@@ -70,6 +70,7 @@ def recv4BytesC():
     hex_list = list(map(''.join, list(zip(*[iter(hex_string)]*2))))
     ascii_string = "".join([chr(int("0x"+each_hex,0)) for each_hex in hex_list])
     print(ascii_string)
+    time.sleep(rep_wait_time) # Wait a bit so that "Eve" can listen more carefully :P
     return ascii_string
 
 def recvKeyQ():
@@ -167,7 +168,6 @@ try:
     print("\nTesting the public channel...")
 
     print("Alice sends", recv4BytesC())
-
     print("You reply --OK!!--")
     send4BytesC("OK!!")
 

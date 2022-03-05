@@ -1,6 +1,9 @@
 # ignore backup files
 *.bak
 
+# ignore user generated data
+*.dat
+
 # virtual environments
 venv/
 .venv/
