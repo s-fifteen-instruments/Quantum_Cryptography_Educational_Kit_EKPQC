@@ -14,7 +14,7 @@ with open(devloc_file) as f:
     content = f.readlines()[0]
     if content[-1] == '\n':  # Remove an extra \n
         content = content[:-1]
-serial_addr = 'COM8'
+serial_addr = 'COM5'
 
 # Other parameters declarations
 baudrate = 38400      # Default in Arduino
@@ -74,21 +74,20 @@ while True:
         device.write('RECV '.encode()) # Flag to recv
         while True:
             if device.in_waiting:
-                hex_string = device.read(8)
+                hex_string = device.read(8).decode()
                 device.write('RECV '.encode()) # Flag to recv
                 # Looking for start of text
-                if hex_string[:7] == b'2131313':
+                if hex_string[:7] == '2131313':
                     print ("--- START OF TEXT ---")
                     state = 1
                 elif state == 1:
                     try:
                         # Looking for end of text
-                        if hex_string == b'3030303':
+                        if hex_string == '3030303':
                             device.write('#'.encode()) # Flag to end listening
                             print ("\n--- END OF TEXT ---")
                             break
                         # Check and modify the length of string to 8 HEX char
-                        hex_string = hex_string.decode()
                         if len(hex_string) < 8:
                             hex_string = hex_string.zfill(8)
                         # Convert to ASCII string

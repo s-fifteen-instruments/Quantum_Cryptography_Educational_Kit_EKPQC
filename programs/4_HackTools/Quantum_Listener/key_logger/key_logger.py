@@ -20,7 +20,7 @@ print("To exit the program, use Ctrl+C \n")
 # Serial 1
 baudrate1 = 38400      # Default in Arduino
 timeout1 = 0.1        # Serial timeout (in s).
-refresh_rate= 0.1     # Minimum offset around 10 ms
+refresh_rate= 0.05     # Minimum offset around 10 ms
 
 # Serial 2
 baudrate2 = 38400    # Default in Arduino

@@ -87,7 +87,8 @@ void loop() {
   int maxChoice = 15;
   char sercmd[maxChoice][8] = {"HELP",                //0
     "SETANG1", "ANG1?", "SETPOL1", "POL1?", "VOLTS?", //5
-    "SETANG2", "ANG2?", "SETPOL2", "POL2?", "*IDN?"}; //10
+    "SETANG2", "ANG2?", "SETPOL2", "POL2?", "*IDN?",  //10
+    "HOF1?", "SETHOF1", "HOF2?", "SETHOF2"};          //14
   for (int c=0; c<maxChoice; c++){
     if (strcasecmp(sercmd[c],serbuf) == 0){ 
       enumc = c;// Obtain match
@@ -215,7 +216,35 @@ void loop() {
     case 10: //*IDN?
       Serial.println("QuantumEve");
       break;
-     
+
+    case 11: //HOF1?
+      EEPROM_readAnything(EEloc_polOffset1, polOffset1);
+      Serial.println(polOffset1);
+      break;
+
+    case 12: //SETHOF1 X
+      // listen again (for ofset value)
+      while (!Serial.available());
+      Serial.readBytesUntil(' ', valbuf, 15); // Until whitespace
+      polOffset1 = atoi(valbuf);
+      EEPROM_writeAnything(EEloc_polOffset1, polOffset1);
+      Serial.println(F("OK"));
+      break;
+
+    case 13: //HOF2?
+      EEPROM_readAnything(EEloc_polOffset1, polOffset1);
+      Serial.println(polOffset1);
+      break;
+
+    case 14: //SETHOF2 X
+      // listen again (for ofset value)
+      while (!Serial.available());
+      Serial.readBytesUntil(' ', valbuf, 15); // Until whitespace
+      polOffset2 = atoi(valbuf);
+      EEPROM_writeAnything(EEloc_polOffset2, polOffset2);
+      Serial.println(F("OK"));
+      break;
+    
     default:
       Serial.println("Unknown command");
       break;
