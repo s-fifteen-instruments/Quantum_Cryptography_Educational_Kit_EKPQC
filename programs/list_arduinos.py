@@ -9,11 +9,11 @@ Author: JH 2022
 Version: 1.0
 '''
 
-
 import time
 import serial
 import glob
 import sys
+from tqdm import tqdm
 
 def serial_ports():
 	""" Lists serial port names
@@ -44,6 +44,8 @@ def serial_ports():
 	return result
 
 ports = serial_ports()
+print(f'The open ports are: {ports}')
+print('Identifying ports, please wait...')
 
 for index, port in enumerate(ports):
     try:
@@ -53,8 +55,7 @@ for index, port in enumerate(ports):
         dev.reset_input_buffer()
         dev.reset_output_buffer()
         dev.write("*IDN? ".encode())
-        for i in range(10):
-            print('here')
+        for i in tqdm(range(10)):
             if dev.in_waiting:
                 response = dev.readlines()[0].decode().strip()
                 ports[index] += " (" + response + ")"
@@ -64,5 +65,6 @@ for index, port in enumerate(ports):
     except:
         pass
 
+print('Ports identified!')
 print(ports)
 
