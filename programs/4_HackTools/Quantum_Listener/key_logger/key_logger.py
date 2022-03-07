@@ -1,5 +1,13 @@
 '''
-Description: Python wrapper program to log the measurement result for Eve
+Description: Python wrapper program to eavesdrop on the quantum channel for Eve.
+
+Usage: Start the program and wait. The photodiode readings will be logged into a .dat
+file. The .dat file is automatically named with the current time.
+
+Options:
+
+  -h, --help       show this help message and exit
+  --serial SERIAL  Sets the serial address of the Arduino
 
 Author: Qcumber 2018
 
@@ -10,9 +18,14 @@ import serial
 import sys
 import time
 from datetime import datetime
+import argparse # For running the script with options
 
-# Serial 1
-serial_addr = 'COM6'   # Arduino
+my_parser = argparse.ArgumentParser()
+my_parser.add_argument('--serial', action='store', type=str, required=True, help='Sets the serial address of the Arduino')
+
+# Get the serial address
+args = my_parser.parse_args()
+serial_addr = vars(args).get('serial')
 
 print("Eavesdropping... will record any voltages into a file")
 print("To exit the program, use Ctrl+C \n")

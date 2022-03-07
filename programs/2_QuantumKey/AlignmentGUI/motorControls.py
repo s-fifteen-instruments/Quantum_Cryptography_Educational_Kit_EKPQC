@@ -1,6 +1,12 @@
 """
-Modified by: Xi Jie
-Package for Motorstepper controls for QCamp 2018
+Description: Package for servo motor controls. Python wrapper for Arduino serial commands 
+to talk to the motor. Contains a single 'MotorControl' class.
+
+Usage: Only for Alice and Bob. Slight modifications will need to be made to talk to Eve's motors.
+
+Authors: Qcumber 2018, Xi Jie
+
+Version: 1.0
 """
 from turtle import write_docstringdict
 import serial

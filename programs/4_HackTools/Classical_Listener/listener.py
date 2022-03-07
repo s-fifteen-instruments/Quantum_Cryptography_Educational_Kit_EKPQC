@@ -1,19 +1,29 @@
 '''
-Python wrapper program to eavesdrop on the IR channel (continously)
+Description: Python wrapper program to eavesdrop on the IR channel (continously)
+
+Usage: Run the program and wait for intercepted messages to show up.
+
+Options:
+
+  -h, --help       show this help message and exit
+  --serial SERIAL  Sets the serial address of the Arduino
+
 Author: Qcumber 2018
+
+Version: 1.0
 '''
 
 import serial
 import sys
 import time
+import argparse # For running the script with options
 
-# Obtain device location
-# devloc_file = '../../devloc_classical.txt'
-# with open(devloc_file) as f:
-#     content = f.readlines()[0]
-#     if content[-1] == '\n':  # Remove an extra \n
-#         content = content[:-1]
-serial_addr = 'COM9'
+my_parser = argparse.ArgumentParser()
+my_parser.add_argument('--serial', action='store', type=str, required=True, help='Sets the serial address of the Arduino')
+
+# Get the serial address
+args = my_parser.parse_args()
+serial_addr = vars(args).get('serial')
 
 # Other parameters declarations
 baudrate = 38400      # Default in Arduino

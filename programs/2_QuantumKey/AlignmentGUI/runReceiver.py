@@ -1,10 +1,13 @@
 """
-Created on May 2018
+Description: GUI for Receiver program.
+Created on May 2018, modified from the QITlab program.
 
-Modified from the QITlab program
-@author: Qcumber2018
+Usage: Run on receiver's (Bob) side. Used to calibrate polarization
+offsets and scan visibilities in tandem with `runSender.py`.
 
-GUI for Receiver program 
+Author: Qcumber2018
+
+Version: 1.0
 """
 
 import sys

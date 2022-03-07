@@ -1,11 +1,13 @@
-#!/usr/bin/env python
 """
-Created on May 2018
+Description: GUI for Sender program .
+Created on May 2018, modified from the QITlab program.
 
-Modified from the QITlab program
-@author: Qcumber2018
+Usage: Run on sender's (Alice) side. Used to calibrate polarization
+offsets and scan visibilities in tandem with `runReceiver.py`.
 
-GUI for Receiver program 
+Author: Qcumber2018
+
+Version: 1.0
 """
 
 import sys
@@ -29,7 +31,6 @@ def insanity_check(number, min_value, max_value):
         return min_value
     else:
         return number
-
 # serial_ports function from:
 # https://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
 def serial_ports():
@@ -163,7 +164,7 @@ class MyWindowClass(QMainWindow, form_class):
             #Initialising the motors
             self.curr_angle = float(self.motor.get_angle())
             self.offset  = int(self.motor.get_offset())
-            print((self.offset))
+            #print((self.offset))
             self.update_offset(self.offset)
             self.update_angle(self.curr_angle)
             self.deviceRunning = not self.deviceRunning

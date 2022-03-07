@@ -1,7 +1,12 @@
 '''
-Python wrapper program to simulate the key sifting process
-in our BB84 QKD implementation (only for 16 bit keys).
+Description: Python helper program to simulate the key sifting process
+in our BB84 QKD implementation (only for 16 bit keys). 
+
+Usage: To be used in conjunction with the manual keysifting worksheet 'manual_keysift.pdf'
+
 Author: Qcumber 2018
+
+Version: 1.0
 '''
 
 import sys

@@ -1,6 +1,9 @@
 """
-
 Description: GUI for clustering algorithm for `Q'KD hacking. Modified code from Qcamp2018. Some parts were inspired from pulse fitting.
+
+Usage: Select the .dat file obtained from key_logger.py. Press 'Start' on the GUI to run the clustering algorithm, 'Decode!' to obtain
+the raw key, and 'Apply' with the sifted basis from listener.py to obtain the sifted key. There are four possible keys depending on 
+your polarization assignments in the 'Decode!' section. Only one of these keys will return a decrypted message that makes sense.
 
 Author: Qcumber 2018, JH 2022
 

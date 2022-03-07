@@ -1,13 +1,36 @@
 '''
-Python wrapper program to send 32 bits QKD keys via
-quantum and classial channel
+Description: Python wrapper program to send 32 bits QKD keys via
+quantum and classial channel.
+
+Usage: Used in conjunction with `recv_32bitQKD.py`. The 'recv' program
+must be started first before the 'send' program.
+
+Options: python send_32bitQKD.py [-h]
+
+        -h, --help         show this help message and exit
+        --Cserial CSERIAL  Sets the serial address of the Classical Arduino
+        --Qserial QSERIAL  Sets the serial address of the Quantum Arduino
+
 Author: Qcumber 2018
+
+Version: 1.0
 '''
 
 import serial
 import sys
 import time
 import numpy as np
+
+import argparse # For running the script with options
+
+my_parser = argparse.ArgumentParser()
+my_parser.add_argument('--cserial', action='store', type=str, required=True, help='Sets the serial address of the Classical Arduino')
+my_parser.add_argument('--qserial', action='store', type=str, required=True, help='Sets the serial address of the Quantum Arduino')
+
+# Get the serial address
+args = my_parser.parse_args()
+serial_addrC = vars(args).get('cserial') #contentC
+serial_addrQ = vars(args).get('qserial') #contentQ
 
 # Parameter
 rep_wait_time = 0.3  # Wait time between IR packets (in s).
@@ -120,20 +143,6 @@ def keySiftAliceC(valA_str, basA_str):
     # Return the final sifted key
     print(siftmask_str, siftkey_str)
     return siftkey_str
-
-# Obtain device location
-devloc_fileC = '../devloc_classical.txt'
-devloc_fileQ = '../devloc_quantum.txt'
-# with open(devloc_fileC) as f:
-#     contentC = f.readlines()[0]
-#     if contentC[-1] == '\n':  # Remove an extra \n
-#         contentC = contentC[:-1]
-# with open(devloc_fileQ) as f:
-#     contentQ = f.readlines()[0]
-#     if contentQ[-1] == '\n':  # Remove an extra \n
-#         contentQ = contentQ[:-1]
-serial_addrC = 'COM5' #contentC
-serial_addrQ = 'COM3' #contentQ
 
 # Other parameters declarations
 baudrate = 38400      # Default in Arduino

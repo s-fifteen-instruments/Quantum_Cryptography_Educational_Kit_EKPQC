@@ -1,7 +1,13 @@
-#!/usr/bin/env python2
+"""
+Description: This program asks converts between ASCII and binary/hex based on the user's input.
 
-# This program asks the user and converts between ASCII and binary/hex.
-# Author: Qcumber 2018
+Usage: Start the program and follow the printed instructions.
+
+Author: Qcumber 2018
+
+Version: 1.0
+"""
+
 
 import time
 import sys

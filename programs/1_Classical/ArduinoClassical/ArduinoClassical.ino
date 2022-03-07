@@ -7,10 +7,10 @@
   3. Sending a short message (4 bytes)
   4. Recving a short message (4 bytes)
  Author: Qcumber (2018) 
+ Version: 1.0
 */
 
 #include <IRremote.hpp>
-// #include "PinDefinitionsAndMore.h"
 
 #define SEND_PWM_BY_TIMER
 // Parameters

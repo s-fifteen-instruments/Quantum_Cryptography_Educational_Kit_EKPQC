@@ -1,5 +1,5 @@
 '''
-Python wrapper program to send commands to Arduino Classical to turn sender
+Description: Python wrapper program to send commands to Arduino Classical to turn sender
 LED on and off. The purpose is to serve as a simple demonstration of how a
 phone camera can capture wavelengths that the eye cannot. The sender LED used
 in the Mar 2022 iteration emits 940nm light.
@@ -11,20 +11,27 @@ process the whole of message. The commands are also not case-sensitive, you may
 try this out with any combination of capital and non-capital letters. All 
 commands that do not fit the above description will be met with an 'Unknown
 Command'.
+
+Options: python chatting.py
+
+        -h, --help       show this help message and exit
+        --serial SERIAL  Sets the serial address of the Arduino
+
 Author: JH 2022
+
+Version: 1.0
 '''
 
 import serial
 import sys
 import time
+import argparse # For running the script with options
 
 # Obtain device location
-devloc_file = '../devloc_classical.txt'
-# with open(devloc_file) as f:
-#     content = f.readlines()[0]
-#     if content[-1] == '\n':  # Remove an extra \n
-#         content = content[:-1]
-serial_addr = 'COM5'
+my_parser = argparse.ArgumentParser()
+my_parser.add_argument('--serial', action='store', type=str, required=True, help='Sets the serial address of the Arduino')
+args = my_parser.parse_args()
+serial_addr = vars(args).get('serial')
 
 # Other parameters declarations
 baudrate = 38400      # Default in Arduino
@@ -41,6 +48,7 @@ print("Done\n")
 
 print("LED basic on/off program")
 print("\"LEDON\" and \"LEDOFF\" to turn the LED on and off respectively")
+print("Commands are not case-sensitive")
 print("To exit the program, use Ctrl+C\n")
 
 while True:
@@ -62,4 +70,5 @@ while True:
         pass
     except KeyboardInterrupt:
         print ("\nKeyboard Interrupt - Exiting...thank you for using the program!")
-        sys.exit()  # Exits the program
+        # Exits the program
+        sys.exit()

@@ -1,28 +1,39 @@
 '''
-Python wrapper program to calibrate the quantum / polarisation
+Description: Python wrapper program to calibrate the quantum / polarisation
 signal transmission (for sender).
+
+Usage: This program is used in tandem with `send_calibrate.py`. The receiver (Bob)
+must start `recv_calibrate.py` first before the sender (Alice) starts `send_calibrate.py`
+on their end. 
+
+Options: python recv_calibrate.py
+
+        -h, --help       show this help message and exit
+        --serial SERIAL  Sets the serial address of the Arduino
+
 Author: Qcumber 2018
+
+Version: 1.0
 '''
 
 import serial
 import sys
 import time
+import argparse # For running the script with options
+
+my_parser = argparse.ArgumentParser()
+my_parser.add_argument('--serial', action='store', type=str, required=True, help='Sets the serial address of the Arduino')
+
+# Get the serial address
+args = my_parser.parse_args()
+serial_addr = vars(args).get('serial')
 
 # Parameters
 sender_seq = '0123012301230123 '
 
-# Obtain device location
-# devloc_file = 'devloc_quantum.txt'
-# with open(devloc_file) as f:
-#     content = f.readlines()[0]
-#     if content[-1] == '\n':  # Remove an extra \n
-#         content = content[:-1]
-# serial_addr = content
-
 # Other parameters declarations
 baudrate = 38400      # Default in Arduino
 timeout = 0.1        # Serial timeout (in s).
-serial_addr = "COM3" # Hard-coded for now.
 
 # Starts the program
 print("Polarisation Calibrator (Sender)")

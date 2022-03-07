@@ -1,38 +1,41 @@
 '''
-Python wrapper program to send 32 bits QKD keys via
-quantum and classial channel
+Description: Python wrapper program to send 32 bits QKD keys via
+quantum and classial channel.
+
+Usage: Used in conjunction with `send_32bitQKD.py`. The 'recv' program
+must be started first before the 'send' program.
+
+Options: python recv_32bitQKD.py 
+
+        -h, --help            show this help message and exit
+        --cserial CSERIAL     Sets the serial address of the Classical Arduino
+        --qserial QSERIAL     Sets the serial address of the Quantum Arduino
+        --threshold THRESHOLD
+                            Sets the threshold value for basis differentiation
+
 Author: Qcumber 2018
+
+Version: 1.0
 '''
 
 import serial
 import sys
 import time
 import numpy as np
+import argparse # For running the script with options
 
+my_parser = argparse.ArgumentParser()
+my_parser.add_argument('--cserial', action='store', type=str, required=True, help='Sets the serial address of the Classical Arduino')
+my_parser.add_argument('--qserial', action='store', type=str, required=True, help='Sets the serial address of the Quantum Arduino')
+my_parser.add_argument('--threshold', action='store', type=int, required=True, help='Sets the threshold value for basis differentiation')
+args = my_parser.parse_args()
+
+# Get the serial address
+serial_addrC = vars(args).get('cserial') #contentC
+serial_addrQ = vars(args).get('qserial') #contentQ
 # Parameter
 rep_wait_time = 0.3  # Wait time between packets (in s).
-
-# Obtain device location
-devloc_fileC = '../devloc_classical.txt'
-devloc_fileQ = '../devloc_quantum.txt'
-# with open(devloc_fileC) as f:
-#     contentC = f.readlines()[0]
-#     if contentC[-1] == '\n':  # Remove an extra \n
-#         contentC = contentC[:-1]
-# with open(devloc_fileQ) as f:
-#     contentQ = f.readlines()[0]
-#     if contentQ[-1] == '\n':  # Remove an extra \n
-#         contentQ = contentQ[:-1]
-serial_addrC = 'COM8' #contentC
-serial_addrQ = 'COM7' #contentQ
-
-# Obtain threshold
-# threshold_file = '../threshold.txt'
-# with open(threshold_file) as f:
-#     content = f.readlines()[0]
-#     if content[-1] == '\n':  # Remove an extra \n
-#         content = content[:-1]
-threshold = 400 #float(content) # Get the float value
+threshold = vars(args).get('threshold') # Threshold for basis differentiation.
 
 ''' Helper functions '''
 

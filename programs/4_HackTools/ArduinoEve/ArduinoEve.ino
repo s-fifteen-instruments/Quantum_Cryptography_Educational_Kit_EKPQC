@@ -1,7 +1,8 @@
 /*
-  Arduino program for Eve the Eavesdropper (Mission 4). 
+  Arduino program for Eve the Eavesdropper (Chapter 5). 
   Implemented features: see the HELP section
- Author: Qcumber (2018)
+ Author: Qcumber (2018), JH (2022)
+ Version: 1.0
 */
 
 #include <EEPROM.h>

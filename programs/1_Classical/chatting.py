@@ -1,20 +1,33 @@
 '''
-Python wrapper program to receive a string through the IR channel with
-the NEC-string protocol.
+Description: Python wrapper program to receive a string through the IR channel with
+the NEC-string protocol. Use this program to chat with another party over the IR channel!
+
+Usage: Both parties who wish to chat should start this program. The program starts in 
+sending mode, hit 'Enter' to switch to receiving mode and vice versa. To send message,
+type in message while in sending mode and hit 'Enter'. Use 'Ctrl+C' to exit the program.
+
+Options: python chatting.py
+
+        -h, --help       show this help message and exit
+        --serial SERIAL  Sets the serial address of the Arduino
+
 Author: Qcumber 2018
+
+Version: 1.0
 '''
 
 import serial
 import sys
 import time
+import argparse # For running the script with options
 
-# Obtain device location
-devloc_file = '../devloc_classical.txt'
-with open(devloc_file) as f:
-    content = f.readlines()[0]
-    if content[-1] == '\n':  # Remove an extra \n
-        content = content[:-1]
-serial_addr = 'COM7'
+my_parser = argparse.ArgumentParser()
+my_parser.add_argument('--serial', action='store', type=str, required=True, help='Sets the serial address of the Arduino')
+
+# Get the serial address
+args = my_parser.parse_args()
+serial_addr = vars(args).get('serial')
+
 
 # Other parameters declarations
 baudrate = 38400      # Default in Arduino
@@ -46,7 +59,7 @@ while True:
         else:   # Send the message lor
             # Iterate and send the string
             device.write('SEND '.encode()) # Flag to send
-            device.write('\x02\x02\x02\x02'.encode()) # Start of text
+            device.write(b'\x02\x13\x13\x13') # Start of text
             time.sleep(rep_wait_time)
             str_ptr = 0
             max_str = len(tosend_string)
@@ -60,7 +73,7 @@ while True:
                 time.sleep(rep_wait_time)
                 if str_ptr >= max_str:
                     device.write('SEND '.encode()) # Flag to send
-                    device.write('\x03\x03\x03\x03'.encode()) # End of text
+                    device.write(b'\x03\x03\x03\x03') # End of text
                     time.sleep(rep_wait_time)
                     sys.stdout.write("\r{0}\n".format("Sending done!"))
                     sys.stdout.flush()
@@ -77,17 +90,18 @@ while True:
                 hex_string = device.read(8)
                 device.write('RECV '.encode()) # Flag to recv
                 # Looking for start of text
-                if hex_string[:7] == '2020202':
+                if hex_string[:7] == b'2131313':
                     print ("--- START OF TEXT ---")
                     state = 1
                 elif state == 1:
                     try:
                         # Looking for end of text
-                        if hex_string == '3030303':
+                        if hex_string == b'3030303':
                             device.write('#'.encode()) # Flag to end listening
                             print ("\n--- END OF TEXT ---")
                             break
                         # Check and modify the length of string to 8 HEX char
+                        hex_string = hex_string.decode()
                         if len(hex_string) < 8:
                             hex_string = hex_string.zfill(8)
                         # Convert to ASCII string
