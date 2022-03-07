@@ -1,3 +1,4 @@
+colorama==0.4.4
 cycler==0.11.0
 fonttools==4.28.5
 future==0.18.2
@@ -13,6 +14,7 @@ PyQt5==5.15.6
 PyQt5-Qt5==5.15.2
 PyQt5-sip==12.9.0
 pyqtgraph==0.12.3
+pyserial==3.5
 python-dateutil==2.8.2
 PyYAML==6.0
 scikit-learn==1.0.2
@@ -22,3 +24,4 @@ six==1.16.0
 sklearn==0.0
 tabulate==0.8.9
 threadpoolctl==3.0.0
+tqdm==4.63.0
