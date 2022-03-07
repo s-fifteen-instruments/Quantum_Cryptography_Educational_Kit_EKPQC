@@ -1,10 +1,10 @@
 """
-Created a day before Qcamp2018
-Some parts were inspired from pulse fitting.
 
-@author: Qcumber 2018
+Description: GUI for clustering algorithm for `Q'KD hacking. Modified code from Qcamp2018. Some parts were inspired from pulse fitting.
 
-GUI for clustering algorithm for `Q'KD hacking
+Author: Qcumber 2018, JH 2022
+
+Version 1.0
 """
 
 import sys
@@ -33,7 +33,7 @@ form_class = uic.loadUiType("guiInterceptor.ui")[0]
 def find_noise(x):
 	"""guesses the noise floor as the most frequently occuring value"""
 	noise = Counter(x).most_common(1)[0][0]
-	print (noise)
+	#print(f'noise:{noise}')
 	return noise
 
 def tohex(val, nbits):
@@ -117,12 +117,33 @@ def kclassify2D(x: np.ndarray,y: np.ndarray, numClasses=5):
 	y = normalize(y.reshape([-1,1]),axis=0)
 
 	dataNormed=np.array(list(zip(x,y))).reshape([-1,2])
-	# print(x,y)
 	# Classify
 	km = KMeans(n_clusters=numClasses, algorithm="full")
 	km.fit(dataNormed)
 	km.predict(dataNormed)
 	labels = km.labels_
+	# Making sure noise is classified as group A (index 0)
+	# Identify noise as the group with the largest size
+	# This may result in rare bugs where noise signals is not the mode, but unlikely
+	# Leaving in debug print commands for future debugging use
+	bincount = np.bincount(labels)
+	noise = np.argmax(bincount)
+	if noise != 0:
+		#print('Enetered wrong noise block.')
+		#print(f'labels: {labels}')
+
+		# Identify group wrongly classified as A
+		old_A_idx = np.where(labels == 0)
+		new_A_idx = np.where(labels == noise)
+		#print(f'old_A_idx: {old_A_idx}')
+		#print(f'new_A_idx: {new_A_idx}')
+
+		# Swap values with wrongly classified group
+		labels[new_A_idx] = 0
+		labels[old_A_idx] = noise
+
+		#print(f'new labels: {labels}')
+
 
 	# Class & Means, Spreads
 	means = []
@@ -176,12 +197,9 @@ def remove_header(signals,numConstant=3):
 	Removes the header that has the signature of a high voltage being numConstant number of points
 	"""
 	ds = np.diff(signals)
-	print (ds)
 	# Finds non-zero signal regions
 	starts = np.where(ds>0)[0]
 	stops = np.where(ds<0)[0]
-	print (starts)
-	print (stops)
 
 	#print((starts, '\n', stops))
 
@@ -200,7 +218,7 @@ def process_clustered_signals(signals):
 
 	# Find nonzero entries in an array
 	nonzero_idx = np.nonzero(signals)[0]
-	print (nonzero_idx)
+	#print(nonzero_idx) # Debug
 
 	consecutives_idx = np.split(nonzero_idx, np.where(np.diff(nonzero_idx) != 1)[0]+1)
 	result_list = []
@@ -296,7 +314,6 @@ class MyWindowClass(QMainWindow, form_class):
 			noiseY = find_noise(y)
 
 			noTally = np.logical_xor(x>noise,y>noise)
-			print (np.size(noTally),np.size(y))
 			#self.signal_plot.plot((noTally))
 
 			for i in np.where(noTally):
@@ -309,7 +326,7 @@ class MyWindowClass(QMainWindow, form_class):
 
 		# KMeans
 		self.labels2D, self.classes, self.voltageClasses2D, self.voltageSpreads2D = kclassify2D(self.dev1,self.dev2,numClasses=5)
-		print (self.labels2D)
+		#print (self.labels2D)
 
 
 		# Reformat integer classes to alphabets to reduce confusion
@@ -393,8 +410,8 @@ class MyWindowClass(QMainWindow, form_class):
 			# 	self.noise_removed=True
 
 			self.result = process_clustered_signals(self.labels2D)
-			print (self.result)
-			print (len(self.result))
+			#print(self.result)
+			#print(len(self.result))
 
 			#print('shape={}'.format(self.labels2D.shape))
 

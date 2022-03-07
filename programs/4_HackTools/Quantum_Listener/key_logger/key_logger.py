@@ -1,7 +1,9 @@
 '''
-Python wrapper program to log the measurement result for Eve
-This version will log from two devices: Arduino (serial1) and powermeter (serial2)
+Description: Python wrapper program to log the measurement result for Eve
+
 Author: Qcumber 2018
+
+Version: 1.0
 '''
 
 import serial
