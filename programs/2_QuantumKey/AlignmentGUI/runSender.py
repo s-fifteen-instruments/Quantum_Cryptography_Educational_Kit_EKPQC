@@ -105,11 +105,12 @@ class MyWindowClass(QMainWindow, form_class):
                 dev.reset_input_buffer()
                 dev.reset_output_buffer()
                 dev.write("help ".encode())
-                while True:
+                for i in range(10):
                     if dev.in_waiting:
                         response = dev.readlines()[0].decode().strip().split()[0]
                         self.ports[index] += " (" + response + ")"
                         break
+                    time.sleep(0.2)
                 dev.close()
             except:
                 pass

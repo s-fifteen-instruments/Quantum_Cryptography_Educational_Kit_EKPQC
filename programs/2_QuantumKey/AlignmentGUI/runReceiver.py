@@ -113,11 +113,13 @@ class MyWindowClass(QMainWindow, form_class):
 				dev.reset_input_buffer()
 				dev.reset_output_buffer()
 				dev.write("*IDN? ".encode())
-				while True:
+				# Try ten times to identify serial device before giving up
+				for i in range(10):
 					if dev.in_waiting:
 						response = dev.readlines()[0].decode().strip()
 						self.ports[index] += " (" + response + ")"
 						break
+					time.sleep(0.2)
 				dev.close()
 			except:
 				pass
