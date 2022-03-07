@@ -56,6 +56,7 @@ sender.reset_output_buffer()
 print("Flushed")
 
 # Send the sequence
+print('Uploading polarization sequence...')
 seq = 'POLSEQ ' + sender_seq
 sender.write(seq.encode())
 
@@ -73,7 +74,7 @@ sender.write(txseq.encode())
 # Block until receive reply
 while True:
     if sender.in_waiting:
-        print((sender.readlines()[0])) # Should display OK
+        print((sender.readlines()[0].decode())) # Should display OK
         break
 
 # Print last statement and exits the program

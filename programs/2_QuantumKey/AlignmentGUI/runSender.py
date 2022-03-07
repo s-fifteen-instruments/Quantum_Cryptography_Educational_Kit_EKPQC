@@ -110,7 +110,7 @@ class MyWindowClass(QMainWindow, form_class):
                         response = dev.readlines()[0].decode().strip().split()[0]
                         self.ports[index] += " (" + response + ")"
                         break
-                    time.sleep(0.2)
+                    time.sleep(0.05)
                 dev.close()
             except:
                 pass

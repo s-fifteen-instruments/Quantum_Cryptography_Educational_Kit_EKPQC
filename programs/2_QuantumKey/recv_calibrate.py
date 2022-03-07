@@ -57,8 +57,9 @@ receiver.reset_output_buffer()
 print("Flushed")
 
 # Send the sequence
+print('Uploading polarization sequence...')
 seq = 'POLSEQ ' + recv_seq
-print(('seq is:{}'.format(seq)))
+#print(('seq is:{}'.format(seq)))
 receiver.write(seq.encode())
 
 # Block until receive reply
@@ -77,19 +78,19 @@ while True:
     if receiver.in_waiting:
         # print('in_wait'.format(receiver.in_waiting))
         # time.sleep(100)
-        print("entering if block")
+        #print("entering if block")
         tmp = receiver.readlines() # Should display lots of nonsense
-        print(("text:", tmp))
-        for val in tmp:
-            print(val)
+        #print(("text:", tmp))
+        # for val in tmp:
+        #     print(f'val:{val}')
         tmp2 = tmp[0].decode()
-        print(("text2:", tmp2))
+        #print(("text2:", tmp2))
         res_str = tmp2
-        print(('res_str is: {}'.format(res_str)))
+        #print(('res_str is: {}'.format(res_str)))
         if res_str:
             try:
                 resA = np.array(res_str.split()).astype(np.int32)
-                print(("resA is: {}".format(str(resA))))
+                #print(("resA is: {}".format(str(resA))))
             except ValueError as e: # To ignore all the debug lines
                 print(e)
                 continue

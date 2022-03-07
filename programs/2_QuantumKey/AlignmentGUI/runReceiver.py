@@ -119,7 +119,7 @@ class MyWindowClass(QMainWindow, form_class):
 						response = dev.readlines()[0].decode().strip()
 						self.ports[index] += " (" + response + ")"
 						break
-					time.sleep(0.2)
+					time.sleep(0.05)
 				dev.close()
 			except:
 				pass
@@ -214,7 +214,7 @@ class MyWindowClass(QMainWindow, form_class):
 					#self.labelPower.setText(power_str + " V")
 					self.ydata[read_count] = self.voltage_A0
 					read_count += 1
-					print(self.xdata[read_count], power_str,sep='\t')
+					#print(self.xdata[read_count], power_str,sep='\t')
 				except:
 					# Sometime the serial channel needs to clear some junks
 					pass

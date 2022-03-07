@@ -60,7 +60,7 @@ for index, port in enumerate(ports):
                 response = dev.readlines()[0].decode().strip()
                 ports[index] += " (" + response + ")"
                 break
-            time.sleep(0.2)
+            time.sleep(0.05)
         dev.close()
     except:
         pass
