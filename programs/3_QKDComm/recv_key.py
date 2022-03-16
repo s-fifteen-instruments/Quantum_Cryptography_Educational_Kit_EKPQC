@@ -1,36 +1,43 @@
 '''
-Python wrapper program to receive a sequence of 16 bit keys (Bob)
+Description: Python wrapper program to receive a sequence of 16 bit keys (Bob)
 without key sifting (it will be done manually).
+
+Usage: Used in conjunction with `send_key.py`. The 'recv' program must be
+started first before the 'send' program.
+
+Options: python recv_key.py 
+
+        -h, --help            show this help message and exit
+        --serial CSERIAL     Sets the serial address of the Arduino
+        --threshold THRESHOLD
+                            Sets the threshold value for basis differentiation
+
 Author: Qcumber 2018
+
+Version: 1.0
 '''
 
 import serial
 import sys
 import time
+import argparse # For running the script with options
+
+my_parser = argparse.ArgumentParser()
+my_parser.add_argument('--serial', action='store', type=str, required=True, help='Sets the serial address of the Arduino')
+my_parser.add_argument('--threshold', action='store', type=int, required=True, help='Sets the threshold value for basis differentiation')
+args = my_parser.parse_args()
+
+# Get the serial address
+serial_addr = vars(args).get('serial')
+baudrate = 38400      # Default in Arduino
+timeout = 0.1        # Serial timeout (in s).
+# Parameter
+rep_wait_time = 0.3  # Wait time between packets (in s).
+threshold = vars(args).get('threshold') # Threshold for basis differentiation.
 
 # Function to convert to hex, with a predefined nbits
 def tohex(val, nbits):
   return hex((val + (1 << nbits)) % (1 << nbits))
-
-# Obtain device location
-# devloc_file = '../devloc_quantum.txt'
-# with open(devloc_file) as f:
-#     content = f.readlines()[0]
-#     if content[-1] == '\n':  # Remove an extra \n
-#         content = content[:-1]
-
-# Obtain threshold
-# threshold_file = '../threshold.txt'
-# with open(threshold_file) as f:
-#     content = f.readlines()[0]
-#     if content[-1] == '\n':  # Remove an extra \n
-#         content = content[:-1]
-threshold = 157 # float(content) # Get the float value
-
-# Other parameters declarations
-baudrate = 38400      # Default in Arduino
-timeout = 0.1        # Serial timeout (in s).
-serial_addr = "COM7" # Hard-coded for now
 
 # Opens the receiver side serial port
 receiver = serial.Serial(serial_addr, baudrate, timeout=timeout)

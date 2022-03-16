@@ -1,24 +1,37 @@
 '''
-Python wrapper program to send a sequence of 16 bit keys (Alice)
+Description: Python wrapper program to send a sequence of 16 bit keys (Alice)
 without key sifting (it will be done manually).
+
+Usage: Used in conjunction with `send_key.py`. The 'recv' program must be
+started first before the 'send' program.
+
+Options: python send_key.py 
+
+        -h, --help            show this help message and exit
+        --serial CSERIAL     Sets the serial address of the Arduino
+        --threshold THRESHOLD
+                            Sets the threshold value for basis differentiation
+
 Author: Qcumber 2018
+
+Version: 1.0
 '''
 
 import serial
 import sys
 import time
+import argparse # For running the script with options
+
+my_parser = argparse.ArgumentParser()
+my_parser.add_argument('--serial', action='store', type=str, required=True, help='Sets the serial address of the Arduino')
+
+# Get the serial address
+args = my_parser.parse_args()
+serial_addr = vars(args).get('serial')
 
 # Function to convert to hex, with a predefined nbits
 def tohex(val, nbits):
   return hex((val + (1 << nbits)) % (1 << nbits))
-
-# Obtain device location
-devloc_file = '../devloc_quantum.txt'
-# with open(devloc_file) as f:
-#     content = f.readlines()[0]
-#     if content[-1] == '\n':  # Remove an extra \n
-#         content = content[:-1]
-serial_addr = 'COM3' # Hard-coded for now
 
 # Other parameters declarations
 baudrate = 38400      # Default in Arduino
