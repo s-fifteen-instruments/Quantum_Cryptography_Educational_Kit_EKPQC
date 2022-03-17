@@ -8,9 +8,7 @@ started first before the 'send' program.
 Options: python send_key.py 
 
         -h, --help            show this help message and exit
-        --serial CSERIAL     Sets the serial address of the Arduino
-        --threshold THRESHOLD
-                            Sets the threshold value for basis differentiation
+        --serial SERIAL     Sets the serial address of the Arduino
 
 Author: Qcumber 2018
 
