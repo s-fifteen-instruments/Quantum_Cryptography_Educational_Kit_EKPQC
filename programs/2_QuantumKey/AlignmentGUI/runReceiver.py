@@ -14,6 +14,8 @@ import sys
 import glob
 import serial
 import time
+import pathlib
+import os
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QApplication
@@ -22,6 +24,7 @@ import motorControls as mc
 import numpy as np
 
 REFRESH_RATE = 100 # 100 ms
+os.chdir(pathlib.Path(__file__).parent.resolve())
 form_class = uic.loadUiType("guiRcv.ui")[0]
 
 def insanity_check(number, min_value, max_value):

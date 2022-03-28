@@ -13,6 +13,8 @@ Version: 1.0
 import sys
 import glob
 import time
+import pathlib
+import os
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QApplication
@@ -21,6 +23,7 @@ import serial
 import numpy as np
 
 REFRESH_RATE = 0.1 # 100 ms
+os.chdir(pathlib.Path(__file__).parent.resolve())
 form_class = uic.loadUiType("guiSnd.ui")[0]
 
 def insanity_check(number, min_value, max_value):
