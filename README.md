@@ -1,7 +1,4 @@
-# s15_QCamp2022
-
-# Qcamp 2022
-
+# EKPQC
 
 ## QKD implementation, with a twist.
 
