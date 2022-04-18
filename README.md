@@ -21,7 +21,7 @@ List of external libraries used for Python (non-exhaustive):
 
   # License
 
-`EKPQC` is a Quantum Cryptography Educational Kit by S-Fifteen Instruments.  
+`EKPQC` consists of programs, missions, and handouts for S-Fifteen Instruments Quantum Cryptography Educational Kit. 
 Copyright (C) 2022  Adrian Utama & Gan Jun Herng
 
 This program is free software; you can redistribute it and/or modify
