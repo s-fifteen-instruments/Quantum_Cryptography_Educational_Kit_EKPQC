@@ -4,6 +4,8 @@
 
 This repo consists of programs, missions, and handouts for S-Fifteen Instruments Quantum Cryptography Educational Kit. https://s-fifteen.com/products/ekpqc-quantum-cryptography-educational-kit
 
+Contact email: info@s-fifteen.com  
+
 Read the article that this kit is based on at https://arxiv.org/abs/1911.02565
 
 In short, this session consists of gamified do-it-yourself experiments, designed to convey the ideas and steps of a Quantum Key Distribution implementation and also include a remark about potential security issues. Note also that this is not a QKD implementation, even though they share a lot of properties and similarities.
