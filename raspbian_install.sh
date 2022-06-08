@@ -5,6 +5,6 @@
 #sudo chmod u+x ./raspbian_install.sh
 #./raspbian_install.sh
 
-pip3 install -r requirements.txt --no-warn-script-location
+pip3 install -r requirements_raspbian.txt --no-warn-script-location
 pip3 uninstall -y numpy
 sudo apt install python3-pyqt5 pyqthon3-numpy
