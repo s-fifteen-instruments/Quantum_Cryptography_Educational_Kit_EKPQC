@@ -40,8 +40,8 @@ const int seqPinStop = 300;   // Time in sequence to stop / OFF the pin
 const int seqReadTime = 150;  // 100 ms (hopefully in the middle of the laser pulse)
 const int seqSyncBlink = 300;  // 200 ms (to initialise the signal)
 //int moveType;
-int moveStepper(int moveType = 1, int steps = 30); //2:approachAngle, anything else: gotoAngle 
-    
+int moveStepper(int moveType = 1, int steps = 30); //2:approachAngle, anything else: gotoAngle +
+
 // To deal with floating point rounding off error
 // in the conversion between angle and steps,
 // we define a variable which keeps track of that.
