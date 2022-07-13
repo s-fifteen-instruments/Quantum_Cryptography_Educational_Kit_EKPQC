@@ -30,8 +30,8 @@ args = my_parser.parse_args()
 serial_addr = vars(args).get('serial')
 
 # Parameters
+# 0,1,2,3 - H,V,D,A respectively
 recv_seq = '0000111122223333 '
-#recv_seq = '0123012301230123 '
 
 # Other parameters declarations
 baudrate = 38400    # Default in Arduino
@@ -69,6 +69,8 @@ while True:
         break
 
 # Run the sequence
+# Polarization state always returns to 1 at the end
+# This is defined in the Arduino code
 print("Listen for incoming signal...")
 rxseq = 'RXSEQ '
 receiver.write(rxseq.encode())

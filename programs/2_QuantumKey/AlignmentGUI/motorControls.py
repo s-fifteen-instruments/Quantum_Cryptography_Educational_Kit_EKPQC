@@ -67,6 +67,18 @@ class MotorControl(object):
 		angle = self.readline_fix()
 		return angle
 
+	def set_pol(self, pol):
+		# Sets the polarization to 0,1,2,3 - H,D,V,A
+		writeStr = 'SETPOL ' + str(pol) + ' '
+		self.serial.write(writeStr.encode())
+		self.readline_fix()
+
+	def get_pol(self):
+		# Gets the polarization 0,1,2,3 - H,D,V,A
+		self.serial.write('POL? '.encode())
+		pol = self.readline_fix()
+		return pol
+
 	def set_threshold(self,threshold):
 		#Sets the detector threshold from 0-1023. 200 is approx. 1V
 		writeStr = 'SETTH ' + str(threshold) + ' '

@@ -29,6 +29,7 @@ args = my_parser.parse_args()
 serial_addr = vars(args).get('serial')
 
 # Parameters
+# 0,1,2,3 - H,V,D,A respectively
 sender_seq = '0123012301230123 '
 
 # Other parameters declarations
@@ -67,6 +68,8 @@ while True:
         break
 
 # Run the sequence
+# Polarization state always returns to 1 at the end
+# This is defined in the Arduino code
 print("Running the sequence...")
 txseq = 'TXSEQ '
 sender.write(txseq.encode())

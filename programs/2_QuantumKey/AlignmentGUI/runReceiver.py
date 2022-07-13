@@ -178,9 +178,11 @@ class MyWindowClass(QMainWindow, form_class):
 			self.curr_angle = float(self.motor.get_angle())
 			self.offset  = int(self.motor.get_offset())
 			self.threshold = int(self.motor.get_threshold())
+			self.pol = round(float((self.motor.get_pol())))
 			self.update_threshold(self.threshold)
 			self.update_offset(self.offset)
 			self.update_angle(self.curr_angle)
+			self.update_pol(self.pol)
 			self.deviceRunning = not self.deviceRunning
 		else:
 			#Stop the device
@@ -255,8 +257,9 @@ class MyWindowClass(QMainWindow, form_class):
 		#Change the absolute angle in GUI and here
 		self.statusbar.showMessage("Updating Angle... Please Wait")
 		self.curr_angle = angle_value
-		self.angleInput.setValue(angle_value) #QDoubleSpinBox - See guiRcv.ui file
 		self.motor.set_angle(angle_value)
+		self.curr_angle = float(self.motor.get_angle())
+		self.angleInput.setValue(self.curr_angle) #QDoubleSpinBox - See guiRcv.ui file
 		self.statusbar.showMessage("Updating Angle... Done")
 		return None
 
@@ -283,6 +286,16 @@ class MyWindowClass(QMainWindow, form_class):
 		self.offsetInput.setValue(offset_value)
 		self.motor.set_offset(offset_value)
 		self.statusbar.showMessage("Updating Offset... Done")
+		return None
+
+	def update_pol(self,pol_value):
+        #Change the polarization in GUI and here
+		self.statusbar.showMessage("Updating Polarization... Please Wait")
+
+		self.pol = pol_value
+		self.polInput.setValue(pol_value)
+		self.motor.set_pol(pol_value)
+		self.statusbar.showMessage("Updating Polarization... Done")
 		return None
 
 	def set_offset_gui(self):
