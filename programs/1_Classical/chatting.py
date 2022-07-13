@@ -85,7 +85,10 @@ while True:
         state = 0 # 0 : waiting for STX, 1 : transmitting/ wait for ETX
         device.reset_input_buffer() # Flush all the garbages
         device.write('RECV '.encode()) # Flag to recv
+        i = 0
         while True:
+            i+=1
+            print(f'Listening Loop {i}')
             if device.in_waiting:
                 hex_string = device.read(8)
                 device.write('RECV '.encode()) # Flag to recv

@@ -27,6 +27,7 @@ import serial
 import sys
 import time
 import argparse # For running the script with options
+from threading import thread
 
 my_parser = argparse.ArgumentParser()
 my_parser.add_argument('--serial', action='store', type=str, required=True, \
@@ -52,23 +53,21 @@ time.sleep(2)
 print("Done\n")
 
 print("Qcumber ChatBox v1.00")
-print("To exit the program, use Ctrl+C")
+print("To exit the program, use Ctrl+C")  
 
 # Always listening, except when it is not...
 def chat():
     chatting_mode = 0 # 0 = sending, 1 = listening
     while True:
-        print(f'MSG true loop, mode: {chatting_mode}')
         if chatting_mode == 0:
             try:
                 input_str = wait_for_input()
                 print(f'input_string: {input_str}')
                 if input_str == "":
-                    print('entering mode 0 if')
                     pass
                 else:
-                    print('entering mode 0 else')
                     send_input(input_str, device)
+                print('Switching chatting mode to 1')
                 chatting_mode = 1
             except KeyboardInterrupt:
                 device.write('#'.encode()) # Flag to force end listening
@@ -77,11 +76,12 @@ def chat():
         elif chatting_mode == 1:
             try:
                 listen_for_message(device)
+                print('Switching chatting mode to 0')
                 chatting_mode = 0
             except KeyboardInterrupt:
-                device.write('#'.encode()) # Flag to force end listening
+                device.write('#'.encode())
                 print ("\nThank you for using the program!")
-                sys.exit()  # Exits the program
+                sys.exit()
     
 
 
@@ -123,10 +123,13 @@ def listen_for_message(device):
     state = 0 # 0 : waiting for Unicode STX, 1 : transmitting/ wait for ETX
     device.reset_input_buffer() # Flush all the garbages
     device.write('RECV '.encode())
+    i = 0
     while True:
-        input_str = input(msg_string)
-        # print(f'input_string: {input_string}')
+        i+=1
+        print(f'Listening Loop {i}')
+        #input_str = input(msg_string) + "\n"
         if device.in_waiting:
+            print(f'Entering DEVICE IN WAITING')
             hex_string = device.read(8)
             device.write('RECV '.encode())
             # Looking for start of text
@@ -151,10 +154,14 @@ def listen_for_message(device):
                     sys.stdout.flush()
                 except ValueError:
                     print("\n ERROR! UNABLE TO DECODE STRING!")
-        if input_str == "\n":
-            # To exit receiving mode with Enter key
-            device.write('#'.encode())
-            break
+        """Need to implement input as a separate thread. If not it
+           blocks the listening loop from looping."""
+        # if input_str == "\n":
+        #     # To exit receiving mode
+        #     print(f'Breaking from receiving mode')
+        #     device.write('#'.encode())
+        #     break
+        # print('Reached end of TRUE loop')
 
 if __name__ == "__main__":
     chat()
