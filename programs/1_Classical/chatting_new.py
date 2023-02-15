@@ -27,7 +27,7 @@ import serial
 import sys
 import time
 import argparse # For running the script with options
-from threading import thread
+from threading import Thread
 
 my_parser = argparse.ArgumentParser()
 my_parser.add_argument('--serial', action='store', type=str, required=True, \
