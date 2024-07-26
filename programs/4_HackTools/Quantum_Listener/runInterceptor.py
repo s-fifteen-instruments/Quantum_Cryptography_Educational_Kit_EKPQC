@@ -121,7 +121,7 @@ def kclassify2D(x: np.ndarray,y: np.ndarray, numClasses=5):
 
 	dataNormed=np.array(list(zip(x,y))).reshape([-1,2])
 	# Classify
-	km = KMeans(n_clusters=numClasses, algorithm="full")
+	km = KMeans(n_clusters=numClasses, algorithm="lloyd")
 	km.fit(dataNormed)
 	km.predict(dataNormed)
 	labels = km.labels_
