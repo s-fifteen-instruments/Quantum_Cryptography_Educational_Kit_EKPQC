@@ -74,7 +74,7 @@ while True:
                 volt_now1 = byte_response1.decode().strip()
                 volt_now2 = byte_response2.decode().strip()
                 break
-        print(time.time()-time_start, volt_now1, volt_now2)
+        print(f"{time.time()-time_start:.3f} {volt_now1:>3} {volt_now2:>3}")
         # Write to a file
         with open(filename, "a+") as myfile:
             myfile.write(volt_now1 + " " + volt_now2 + " " + "\n")
